@@ -56,11 +56,13 @@ namespace MARS_MELA_PROJECT.Controllers
 
             try
             {
+
+                string token = Guid.NewGuid().ToString();
                 // Call DAL to insert user into database
                 // Return values:
                 //  -1 = User already exists
                 //   1 = User successfully registered
-                int res = _use.AddUser(sign);
+                int res = _use.AddUser(sign,token);
 
                 // CASE 1: User already exists
                 if (res == -1)
@@ -68,26 +70,33 @@ namespace MARS_MELA_PROJECT.Controllers
                     TempData["message"] = "User Already Exists";
 
                     // Redirect user to SignIN page
-                    return RedirectToAction("SignIN", "Home");
+                    return RedirectToAction("SignIN", "Account");
                 }
 
                 // CASE 2: New user successfully created
                 else if (res == 1)
                 {
-                    TempData["message"] = "User Registered Successfully";
+                    
 
-                    // Pass mobile and email to next page using TempData
-                    TempData["Mobile"] = sign.MobileNo;
-                    TempData["Email"] = sign.EmailID;
+                    string verifyurl = Url.Action("EmailVerify","Account",new {token=token},Request.Scheme);
 
+                    string body = $"<h3>Welcome {sign.FirstName} </h3>" + $"<h3>Welcome {sign.LastName} </h3><br/>"
+                        + $"Click here to verify your email: <a href='{verifyurl}'>Verify Email</a>\";";
+
+
+
+
+                    TempData["message"] = "Registration successful! Please check your email for verification.";
                     // Redirect user to OTP verification page
-                    return RedirectToAction("Verification", "Home");
+                    return RedirectToAction("SignIn", "Account");
                 }
+
+
 
                 // CASE 3: Unexpected result or failure
                 return View();
             }
-            catch
+            catch(Exception ex)
             {
                 // If any exception occurs, stay on SignUP page
                 return View();
@@ -95,6 +104,16 @@ namespace MARS_MELA_PROJECT.Controllers
         }
 
 
+
+        public IActionResult EmailVerify()
+        {
+            return View();
+        }
+
+        public IActionResult SignIn()
+        {
+            return View();
+        }
 
 
 

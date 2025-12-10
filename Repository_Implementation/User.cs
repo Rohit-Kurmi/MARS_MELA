@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 using System.Data;
 using MARS_MELA_PROJECT;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 
 namespace MARS_MELA_PROJECT.Repository_Implementation
@@ -21,13 +22,13 @@ namespace MARS_MELA_PROJECT.Repository_Implementation
 
 
 
-        public int AddUser(SignUP Sign)
+        public int AddUser(SignUP Sign,string token)
         {
             // Default values for new user
             int EmailVerified = 0;
             int MobileVerified = 0;
             int Status = 1;
-            int IsUsed = 0;
+           DateTime CreatedAt= DateTime.Now;
 
             // Create SQL connection
             using (SqlConnection conn = new SqlConnection(cs))
@@ -35,8 +36,8 @@ namespace MARS_MELA_PROJECT.Repository_Implementation
                 // Use stored procedure: AddUser
                 using (SqlCommand cmd = new SqlCommand("IF EXISTS (SELECT 1 FROM Users WHERE MobileNo = @MobileNo)BEGIN  " +
                     " SELECT -1 AS Result; END  ELSE  BEGIN  INSERT INTO Users (MobileNo,EmailID,EmailVerified,MobileVerified,Status," +
-                    " FirstName,LastName,CreatedBy, CreatedAt,IsUsed) VALUES ( @MobileNo, @EmailID,@EmailVerified,@MobileVerified, @Status,@FirstName," +
-                    "@LastName,@CreatedBy,GETDATE(),@IsUsed); SELECT 1 AS Result; END", conn))
+                    " FirstName,LastName,CreatedBy,EmailVerificationToken,CreatedAt) VALUES ( @MobileNo, @EmailID,@EmailVerified,@MobileVerified, @Status,@FirstName," +
+                    "@LastName,@CreatedBy,@EmailVerificationToken,@CreatedAt); SELECT 1 AS Result; END", conn))
                 {
                     cmd.CommandType = CommandType.Text;
 
@@ -49,7 +50,8 @@ namespace MARS_MELA_PROJECT.Repository_Implementation
                     cmd.Parameters.AddWithValue("@FirstName", Sign.FirstName);
                     cmd.Parameters.AddWithValue("@LastName", Sign.LastName);
                     cmd.Parameters.AddWithValue("@CreatedBy", Sign.CreatedBy);
-                    cmd.Parameters.AddWithValue("@IsUsed",IsUsed);
+                    cmd.Parameters.AddWithValue("@EmailVerificationToken", token);
+                    cmd.Parameters.AddWithValue("@CreatedAt", CreatedAt);
 
                     // Open connection
                     conn.Open();
