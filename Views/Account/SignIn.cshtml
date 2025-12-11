@@ -1,7 +1,57 @@
-﻿
+﻿@model MARS_MELA_PROJECT.Models.SignIn;
+
 @{
     ViewData["Title"] = "SignIn";
 }
 
 <h1>SignIn</h1>
+@if (ViewBag.msg != null)
+{
+    <script>
+        alert("@ViewBag.msg");
+    </script>
+}
+
+@if (TempData["Mobile"] != null)
+{
+    <script>
+        alert("@TempData["Mobile"]");
+    </script>
+}
+
+@if (TempData["invalidtoken"] != null)
+{
+    <script>
+        alert("@TempData["invalidtoken"]");
+    </script>
+}
+
+
+
+
+<form asp-action="SignIn" asp-controller="Account" method="post">
+
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col-sm-4">
+                <input asp-for="MobileNo" class="form-control" placeholder="MobileNo" />
+                <span asp-validation-for="MobileNo" class="text-danger"></span>
+            </div>
+        </div>
+
+        <br /><br />
+
+        <div class="row">
+            <div class="col-sm-4">
+                <input type="submit" value="submit" class="btn btn-outline-primary w-100" />
+
+            </div>
+        </div>
+
+
+    </div>
+</form>
+
 

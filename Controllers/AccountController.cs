@@ -1,17 +1,24 @@
-using System.Diagnostics;
-using MARS_MELA_PROJECT.Models;
+﻿using MARS_MELA_PROJECT.Models;
 using MARS_MELA_PROJECT.Repository_Implementation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using System.Diagnostics;
 
 namespace MARS_MELA_PROJECT.Controllers
 {
     public class AccountController : Controller
     {
         private readonly User _use;
+        private readonly SignInCheckcs _sign;
+        private readonly EmailHelper _emailHelper;
 
-        public AccountController(User use)
+
+        public AccountController(User use, SignInCheckcs sign , EmailHelper emailHelper)
         {
             _use = use;
+            _sign = sign;
+            _emailHelper = emailHelper;
+            
         }
 
 
@@ -57,12 +64,12 @@ namespace MARS_MELA_PROJECT.Controllers
             try
             {
 
-                string token = Guid.NewGuid().ToString();
+                
                 // Call DAL to insert user into database
                 // Return values:
                 //  -1 = User already exists
                 //   1 = User successfully registered
-                int res = _use.AddUser(sign,token);
+                int res = _use.AddUser(sign);
 
                 // CASE 1: User already exists
                 if (res == -1)
@@ -76,19 +83,12 @@ namespace MARS_MELA_PROJECT.Controllers
                 // CASE 2: New user successfully created
                 else if (res == 1)
                 {
-                    
 
-                    string verifyurl = Url.Action("EmailVerify","Account",new {token=token},Request.Scheme);
-
-                    string body = $"<h3>Welcome {sign.FirstName} </h3>" + $"<h3>Welcome {sign.LastName} </h3><br/>"
-                        + $"Click here to verify your email: <a href='{verifyurl}'>Verify Email</a>\";";
-
-
-
+                    _emailHelper.SendVerificationMail(sign.EmailID);
 
                     TempData["message"] = "Registration successful! Please check your email for verification.";
                     // Redirect user to OTP verification page
-                    return RedirectToAction("SignIn", "Account");
+                    return RedirectToAction("Index", "Account");
                 }
 
 
@@ -96,7 +96,7 @@ namespace MARS_MELA_PROJECT.Controllers
                 // CASE 3: Unexpected result or failure
                 return View();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 // If any exception occurs, stay on SignUP page
                 return View();
@@ -104,14 +104,124 @@ namespace MARS_MELA_PROJECT.Controllers
         }
 
 
+        [HttpGet]
+        public IActionResult EmailVerify(string token, string email)
+        {
+            if(string.IsNullOrEmpty(token))
+            {
+                TempData["invalidtoken"] = "Invalid token";
+                return RedirectToAction("SignIn", "Account");
+            }
 
-        public IActionResult EmailVerify()
+            int result=_use.emailverificationcheck(token, email);
+
+            if(result==1)
+            {
+                _use.updateEmailVerified(email);
+                TempData["emailupdate"] = "Email Verified Successfully!";
+                return RedirectToAction("Mobileverification","Account");
+            }
+
+            else if (result == -1)
+            {
+
+                return Content("Token expired! Please resend verification email.");
+            }
+            else if (result == 2)
+            {
+                return Content("Email already verified.");
+            }
+            else
+            {
+                return Content("Invalid verification link.");
+            }
+        }
+
+
+        
+
+
+
+        public IActionResult Mobileverification()
         {
             return View();
         }
 
+
+
+
+
+
         public IActionResult SignIn()
         {
+            return View();
+        }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public IActionResult SignIn(SignIn sign)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(sign);
+            }
+
+
+            try
+            {
+
+
+                string result = _sign.CheckOnSignIN(sign);
+
+
+                // CASE 1: User exists but NOT verified → Send to OTP page
+                if (result == "NEED_EMAIL_VERIFICATION")
+                {
+                    TempData["Mobile"] = "You Have Recived An Email For Email Verification ";
+                    return View();
+                }
+
+
+
+                else if (result == "NEED_MOBILE_VERIFICATION")
+                {
+
+                    return RedirectToAction("Mobileverification", "Account");
+                }
+
+
+                // CASE 2: User verified but has NO password yet
+                // Redirect user to OTP page so that they can verify
+                // and then create a new password
+                else if (result == "CREATE_PASSWORD")
+                {
+                    return RedirectToAction("Verification", "Account");
+                }
+
+
+                // CASE 3: User verified AND password already exists
+                // Take user to EnterPassword page
+                else if (result == "LOGIN_ALLOWED")
+                {
+                    TempData["Mobile"] = sign.MobileNo;
+                    return RedirectToAction("EnterPassword");
+                }
+
+
+                // CASE 4: User does not exist in database
+                else
+                {
+                    ViewBag.msg = "User not found!";
+                    return View();
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+
+
+
             return View();
         }
 

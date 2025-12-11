@@ -1,17 +1,16 @@
-﻿using MARS_MELA_PROJECT.Models;
+﻿using MARS_MELA_PROJECT;
+using MARS_MELA_PROJECT.Models;
+using MARS_MELA_PROJECT.Repository;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 using System.Data;
-using MARS_MELA_PROJECT;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 
 namespace MARS_MELA_PROJECT.Repository_Implementation
 {
-    public class User
+    public class User : IUser
     {
-
-
 
         private readonly string cs;
 
@@ -22,7 +21,7 @@ namespace MARS_MELA_PROJECT.Repository_Implementation
 
 
 
-        public int AddUser(SignUP Sign,string token)
+        public int AddUser(SignUP Sign)
         {
             // Default values for new user
             int EmailVerified = 0;
@@ -36,8 +35,8 @@ namespace MARS_MELA_PROJECT.Repository_Implementation
                 // Use stored procedure: AddUser
                 using (SqlCommand cmd = new SqlCommand("IF EXISTS (SELECT 1 FROM Users WHERE MobileNo = @MobileNo)BEGIN  " +
                     " SELECT -1 AS Result; END  ELSE  BEGIN  INSERT INTO Users (MobileNo,EmailID,EmailVerified,MobileVerified,Status," +
-                    " FirstName,LastName,CreatedBy,EmailVerificationToken,CreatedAt) VALUES ( @MobileNo, @EmailID,@EmailVerified,@MobileVerified, @Status,@FirstName," +
-                    "@LastName,@CreatedBy,@EmailVerificationToken,@CreatedAt); SELECT 1 AS Result; END", conn))
+                    " FirstName,LastName,CreatedBy,CreatedAt) VALUES ( @MobileNo, @EmailID,@EmailVerified,@MobileVerified, @Status,@FirstName," +
+                    "@LastName,@CreatedBy,@CreatedAt); SELECT 1 AS Result; END", conn))
                 {
                     cmd.CommandType = CommandType.Text;
 
@@ -50,7 +49,6 @@ namespace MARS_MELA_PROJECT.Repository_Implementation
                     cmd.Parameters.AddWithValue("@FirstName", Sign.FirstName);
                     cmd.Parameters.AddWithValue("@LastName", Sign.LastName);
                     cmd.Parameters.AddWithValue("@CreatedBy", Sign.CreatedBy);
-                    cmd.Parameters.AddWithValue("@EmailVerificationToken", token);
                     cmd.Parameters.AddWithValue("@CreatedAt", CreatedAt);
 
                     // Open connection
@@ -62,6 +60,64 @@ namespace MARS_MELA_PROJECT.Repository_Implementation
                     return result;
                 }
             }
+        }
+
+
+
+        public int emailverificationcheck(string token, string email)
+        {
+
+            using (SqlConnection conn = new SqlConnection(cs))
+            {
+                SqlCommand cmd = new SqlCommand("select * from Users Where EmailVerificationToken=@token and EmailID=@EmailID", conn);
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@EmailID", email);
+                cmd.Parameters.AddWithValue("@token", token);
+                conn.Open();
+
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                if (dr.Read())
+                {
+                    DateTime tokenTime = Convert.ToDateTime(dr["TokenGeneratedAt"]);
+                    DateTime now = DateTime.Now;
+                    bool emailVerified = Convert.ToBoolean(dr["EmailVerified"]);
+
+                    if (emailVerified)
+                    {
+                        return 2;   // Already verified
+                    }
+
+
+                    if ((now - tokenTime).TotalHours <= 1)
+                        {
+                            return 1;
+                        }
+
+                        else
+                        {
+                            return -1;
+                        }
+                    
+                }
+            }
+
+
+            return 0;
+        }
+
+
+        public void updateEmailVerified(string email)
+        {
+            DateTime dot= DateTime.Now;
+            using SqlConnection conn = new SqlConnection(cs);
+            SqlCommand cmd = new SqlCommand(
+                "UPDATE Users SET EmailVerified=1,EmailVerifieddAt=@date WHERE EmailID=@Email", conn);
+
+            cmd.Parameters.AddWithValue("@Email", email);
+            cmd.Parameters.AddWithValue("@date", dot);
+            conn.Open();
+            cmd.ExecuteNonQuery();
         }
 
 

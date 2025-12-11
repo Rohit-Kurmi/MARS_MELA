@@ -14,6 +14,15 @@ builder.Services.Configure<DBConfig>(
 //Reprository registration
 
 builder.Services.AddScoped<User>();
+builder.Services.AddScoped<SignInCheckcs>();
+
+//emailhelper
+builder.Services.AddScoped<EmailHelper>();
+
+
+//session
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
 
 
 var app = builder.Build();
@@ -26,6 +35,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseSession();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

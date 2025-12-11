@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewData["Title"] = "Mobileverification";
+}
+
+<h1>Mobileverification</h1>
+
+@if (TempData["emailupdate"] != null)
+{
+    <script>
+        alert("@TempData["emailupdate"]");
+    </script>
+}
