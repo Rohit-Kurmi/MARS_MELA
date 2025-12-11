@@ -9,6 +9,7 @@ namespace MARS_MELA_PROJECT.Repository
         public int emailverificationcheck(string token, string email);
 
         public void updateEmailVerified(string email);
+        public string GenerateAndSaveOTP(Mobileverification mob);
 
 
     }

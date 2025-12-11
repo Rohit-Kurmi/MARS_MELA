@@ -147,6 +147,51 @@ namespace MARS_MELA_PROJECT.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult Mobileverification(Mobileverification mob, string actiontype)
+        {
+            if (actiontype == "Send_OTP")
+            {
+                ModelState.Remove("OTPCode");
+
+                if (!ModelState.IsValid)
+                    return View(mob);
+
+                string otp = _use.GenerateAndSaveOTP(mob);
+
+                if (!string.IsNullOrEmpty(otp))
+                    TempData["OTPMessage"] = $"Your OTP is {otp}";
+
+                return RedirectToAction("Mobileverification");
+            }
+
+            if (actiontype == "Submit")
+            {
+                if (!ModelState.IsValid)
+                    return View(mob);
+
+                int result = _use.verification(mob);
+
+                if (result == 1)
+                {
+                    TempData["Success"] = "Mobile verified!";
+                    return RedirectToAction("CreatePassword");
+                }
+                else if (result == -1)
+                {
+                    TempData["Error"] = "OTP expired! Please request a new OTP.";
+                    return RedirectToAction("Mobileverification");
+                }
+                else
+                {
+                    TempData["Error"] = "Invalid OTP!";
+                    return View(mob);
+                }
+            }
+
+            return View(mob);
+        }
+
 
 
 

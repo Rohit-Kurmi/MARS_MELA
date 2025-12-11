@@ -122,5 +122,79 @@ namespace MARS_MELA_PROJECT.Repository_Implementation
 
 
 
+
+        public string GenerateAndSaveOTP(Mobileverification mob)
+        {
+            string otp = new Random().Next(100000, 999999).ToString();
+
+            using (SqlConnection conn = new SqlConnection(cs))
+            {
+                SqlCommand cmd = new SqlCommand(
+                    @"UPDATE Users 
+              SET OTPCode = @otp, 
+                  OTPGeneratedAt = @OTPGeneratedAt
+              WHERE MobileNo = @MobileNo",
+                    conn
+                );
+
+                cmd.Parameters.AddWithValue("@MobileNo", mob.MobileNo);
+                cmd.Parameters.AddWithValue("@otp", otp);
+                cmd.Parameters.AddWithValue("@OTPGeneratedAt", DateTime.Now);
+
+                conn.Open();
+                int rows = cmd.ExecuteNonQuery();
+
+                return rows > 0 ? otp : "";
+            }
+        }
+
+
+
+        public int verification(Mobileverification mob)
+        {
+            DateTime DOB = DateTime.Now;
+            using (SqlConnection conn = new SqlConnection(cs))
+            {
+                SqlCommand cmd = new SqlCommand(
+                    "SELECT OTPCode, OTPGeneratedAt FROM Users WHERE MobileNo=@MobileNo",
+                    conn
+                );
+
+                cmd.Parameters.AddWithValue("@MobileNo", mob.MobileNo);
+
+                conn.Open();
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                if (dr.Read())
+                {
+                    string storedOtp = dr["OTPCode"].ToString();
+                    DateTime generatedTime = Convert.ToDateTime(dr["OTPGeneratedAt"]);
+
+                    dr.Close();
+
+                    // OTP mismatch
+                    if (storedOtp != mob.OTPCode)
+                        return 0;
+
+                    // OTP expired (valid for 2 minutes)
+                    if ((DateTime.Now - generatedTime).TotalMinutes > 2)
+                        return -1;
+
+                    // Update mobile verified
+                    SqlCommand updateCmd = new SqlCommand(
+                        @"UPDATE Users SET MobileVerified = 1,MobileNoVerifiedAt-@MobileNoVerifiedAt WHERE MobileNo=@MobileNo",
+                        conn
+                    );
+
+                    updateCmd.Parameters.AddWithValue("@MobileNo", mob.MobileNo);
+                    updateCmd.Parameters.AddWithValue("@MobileNoVerifiedAt",DOB);
+                    return updateCmd.ExecuteNonQuery() > 0 ? 1 : 0;
+                }
+
+                return 0;
+            }
+        }
+
+
     }
 }
