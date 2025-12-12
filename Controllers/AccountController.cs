@@ -162,7 +162,7 @@ namespace MARS_MELA_PROJECT.Controllers
                 if (!string.IsNullOrEmpty(otp))
                     TempData["OTPMessage"] = $"Your OTP is {otp}";
 
-                return RedirectToAction("Mobileverification");
+                return View(mob);
             }
 
             if (actiontype == "Submit")
@@ -193,6 +193,58 @@ namespace MARS_MELA_PROJECT.Controllers
         }
 
 
+        public IActionResult CreatePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreatePassword(CreatePassword creatpass)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(creatpass);
+                }
+                // Step 1: Hash the password using SHA256
+                // This ensures the password is stored securely in the database
+                
+
+                // Step 2: Save the hashed password in the database
+                // DAL.SavePassword returns the number of rows affected
+                int result = _use.SavePassword(creatpass.MobileNo, creatpass.PasswordHash);
+
+                // Step 3: Check if the password was saved successfully
+                if (result > 0)
+                {
+                    // Password saved successfully
+                    TempData["Success1"] = "Password created successfully!";
+
+                    // Redirect user to SignIN page after password creation
+                    return RedirectToAction("SignIn", "Account");
+                }
+
+                // Step 4: Password save failed
+                // Show error message and stay on CreatePassword page
+                else
+                {
+                    TempData["Error1"] = "Something went wrong!";
+                    return View();
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+
+
+        public IActionResult EnterPassword()
+        {
+            return View();
+        }
 
 
 

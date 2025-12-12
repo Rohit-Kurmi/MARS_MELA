@@ -10,6 +10,8 @@ namespace MARS_MELA_PROJECT.Repository
 
         public void updateEmailVerified(string email);
         public string GenerateAndSaveOTP(Mobileverification mob);
+        public int verification(Mobileverification mob);
+        public int SavePassword(string mobileNo, string passwordHash);
 
 
     }

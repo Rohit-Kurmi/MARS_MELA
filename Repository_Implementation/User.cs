@@ -182,7 +182,7 @@ namespace MARS_MELA_PROJECT.Repository_Implementation
 
                     // Update mobile verified
                     SqlCommand updateCmd = new SqlCommand(
-                        @"UPDATE Users SET MobileVerified = 1,MobileNoVerifiedAt-@MobileNoVerifiedAt WHERE MobileNo=@MobileNo",
+                        @"UPDATE Users SET MobileVerified = 1,MobileNoVerifiedAt=@MobileNoVerifiedAt WHERE MobileNo=@MobileNo",
                         conn
                     );
 
@@ -192,6 +192,32 @@ namespace MARS_MELA_PROJECT.Repository_Implementation
                 }
 
                 return 0;
+            }
+        }
+
+
+
+
+        public int SavePassword(string mobileNo, string passwordHash)
+        {
+            using (SqlConnection conn = new SqlConnection(cs))
+            {
+                // SQL command to update user's password
+                SqlCommand cmd = new SqlCommand(
+                    @"UPDATE Users 
+              SET PasswordHash = @pwd 
+              WHERE MobileNo = @MobileNo",
+                    conn
+                );
+
+                // Adding parameters safely
+                cmd.Parameters.AddWithValue("@pwd", passwordHash);
+                cmd.Parameters.AddWithValue("@MobileNo", mobileNo);
+
+                conn.Open();
+
+                // Execute update and return affected rows
+                return cmd.ExecuteNonQuery();
             }
         }
 
