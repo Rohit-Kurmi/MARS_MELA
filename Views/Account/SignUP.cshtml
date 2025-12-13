@@ -10,7 +10,7 @@
 
 <form asp-action="SignUP" asp-controller="Account" method="post">
     <div class="container">
-        <div class="row">
+        @* <div class="row">
             <div class="col-sm-4">
                 <input type="radio" value="Citizen" asp-for="CreatedBy" id="CreatedBy1" />
                 <label for="CreatedBy1">Citizen</label>
@@ -19,13 +19,13 @@
                 <br />
                 <span asp-validation-for="CreatedBy" class="text-danger"></span>
             </div>
-        </div>
+        </div> *@
 
 
         <br /><br />
         <div class="row">
             <div class="col-sm-4">
-                <input asp-for="FirstName" class="form-control" placeholder="FirstName" />
+                <input asp-for="FirstName" class="form-control" placeholder="First Name" />
                 <span asp-validation-for="FirstName" class="text-danger"></span>
             </div>
         </div>
@@ -33,7 +33,7 @@
         <br /><br />
         <div class="row">
             <div class="col-sm-4">
-                <input asp-for="LastName" class="form-control " placeholder="LasrName" />
+                <input asp-for="LastName" class="form-control " placeholder="Last Name" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
         </div>
@@ -41,14 +41,14 @@
         <br /><br />
         <div class="row">
             <div class="col-sm-4">
-                <input asp-for="MobileNo" class="form-control" placeholder="MobileNo" />
+                <input asp-for="MobileNo" class="form-control" placeholder="Mobile No." />
                 <span asp-validation-for="MobileNo" class="text-danger"></span>
             </div>
         </div>
         <br /><br />
         <div class="row">
             <div class="col-sm-4">
-                <input asp-for="EmailID" class="form-control" placeholder="EmailID" />
+                <input asp-for="EmailID" class="form-control" placeholder="Email ID" />
                 <span asp-validation-for="EmailID" class="text-danger"></span>
             </div>
         </div>

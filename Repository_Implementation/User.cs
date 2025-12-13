@@ -23,41 +23,79 @@ namespace MARS_MELA_PROJECT.Repository_Implementation
 
         public int AddUser(SignUP Sign)
         {
-            // Default values for new user
             int EmailVerified = 0;
             int MobileVerified = 0;
             int Status = 1;
-           DateTime CreatedAt= DateTime.Now;
+            int result = 0;
+            int userId = 0;
+            DateTime CreatedAt = DateTime.Now;
 
-            // Create SQL connection
             using (SqlConnection conn = new SqlConnection(cs))
             {
-                // Use stored procedure: AddUser
-                using (SqlCommand cmd = new SqlCommand("IF EXISTS (SELECT 1 FROM Users WHERE MobileNo = @MobileNo)BEGIN  " +
-                    " SELECT -1 AS Result; END  ELSE  BEGIN  INSERT INTO Users (MobileNo,EmailID,EmailVerified,MobileVerified,Status," +
-                    " FirstName,LastName,CreatedBy,CreatedAt) VALUES ( @MobileNo, @EmailID,@EmailVerified,@MobileVerified, @Status,@FirstName," +
-                    "@LastName,@CreatedBy,@CreatedAt); SELECT 1 AS Result; END", conn))
+                conn.Open();
+
+                // START TRANSACTION
+                SqlTransaction tran = conn.BeginTransaction();
+
+                try
                 {
-                    cmd.CommandType = CommandType.Text;
+                    using (SqlCommand cmd = new SqlCommand(@"
+IF EXISTS (SELECT 1 FROM Users WHERE MobileNo = @MobileNo)
+BEGIN
+    SELECT -1 AS Result, NULL AS UserId;
+END
+ELSE
+BEGIN
+    INSERT INTO Users 
+    (MobileNo, EmailID, EmailVerified, MobileVerified, Status,
+     FirstName, LastName, CreatedAt)
+    VALUES 
+    (@MobileNo, @EmailID, @EmailVerified, @MobileVerified, @Status,
+     @FirstName, @LastName, @CreatedAt);
 
-                    // Parameters for stored procedure
-                    cmd.Parameters.AddWithValue("@MobileNo", Sign.MobileNo);
-                    cmd.Parameters.AddWithValue("@EmailID", Sign.EmailID);
-                    cmd.Parameters.AddWithValue("@EmailVerified", EmailVerified);
-                    cmd.Parameters.AddWithValue("@MobileVerified", MobileVerified);
-                    cmd.Parameters.AddWithValue("@Status", Status);
-                    cmd.Parameters.AddWithValue("@FirstName", Sign.FirstName);
-                    cmd.Parameters.AddWithValue("@LastName", Sign.LastName);
-                    cmd.Parameters.AddWithValue("@CreatedBy", Sign.CreatedBy);
-                    cmd.Parameters.AddWithValue("@CreatedAt", CreatedAt);
+    DECLARE @NewUserId BIGINT = SCOPE_IDENTITY();
 
-                    // Open connection
-                    conn.Open();
+    INSERT INTO UserRoleMapping (UserID, RoleID, AssignedAt)
+    VALUES (@NewUserId, 1, GETDATE());
 
-                    // Execute the stored procedure and get return value
-                    int result = Convert.ToInt32(cmd.ExecuteScalar());
+    SELECT 1 AS Result, @NewUserId AS UserId;
+END
+", conn, tran))
+                    {
+                        cmd.CommandType = CommandType.Text;
 
+                        cmd.Parameters.AddWithValue("@MobileNo", Sign.MobileNo);
+                        cmd.Parameters.AddWithValue("@EmailID", Sign.EmailID);
+                        cmd.Parameters.AddWithValue("@EmailVerified", EmailVerified);
+                        cmd.Parameters.AddWithValue("@MobileVerified", MobileVerified);
+                        cmd.Parameters.AddWithValue("@Status", Status);
+                        cmd.Parameters.AddWithValue("@FirstName", Sign.FirstName);
+                        cmd.Parameters.AddWithValue("@LastName", Sign.LastName);
+                        cmd.Parameters.AddWithValue("@CreatedAt", CreatedAt);
+
+                        using (SqlDataReader dr = cmd.ExecuteReader())
+                        {
+                            if (dr.Read())
+                            {
+                                result = Convert.ToInt32(dr["Result"]);
+
+                                if (result == 1 && dr["UserId"] != DBNull.Value)
+                                {
+                                    userId = Convert.ToInt32(dr["UserId"]);
+                                }
+                            }
+                        }
+                    }
+
+                    // COMMIT
+                    tran.Commit();
                     return result;
+                }
+                catch
+                {
+                    // ROLLBACK if anything fails
+                    tran.Rollback();
+                    throw;
                 }
             }
         }

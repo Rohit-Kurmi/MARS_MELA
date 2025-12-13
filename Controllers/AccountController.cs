@@ -2,7 +2,7 @@
 using MARS_MELA_PROJECT.Repository_Implementation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using PortalLib.Framework.Utilities;
+//using PortalLib.Framework.Utilities;
 using System.Diagnostics;
 
 namespace MARS_MELA_PROJECT.Controllers
@@ -213,11 +213,11 @@ namespace MARS_MELA_PROJECT.Controllers
 
 
 
-                string hasspassword = PortalEncryption.GetSHA512(creatpass.PasswordHash);
+                //string hasspassword = PortalEncryption.GetSHA512(creatpass.PasswordHash);
 
                 // Step 2: Save the hashed password in the database
                 // DAL.SavePassword returns the number of rows affected
-                int result = _use.SavePassword(creatpass.MobileNo, hasspassword);
+                int result = _use.SavePassword(creatpass.MobileNo, creatpass.PasswordHash);
 
                 // Step 3: Check if the password was saved successfully
                 if (result > 0)

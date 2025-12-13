@@ -7,27 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="libs\**" />
+    <Content Remove="libs\**" />
+    <EmbeddedResource Remove="libs\**" />
+    <None Remove="libs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.22" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="libs\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="EncyptionManager">
-      <HintPath>\\172.16.8.11\Services\PSP 2.0\G2C-B2C Services\MARS Project\encrypt\EncyptionManager.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="MPODecryptStaging">
-      <HintPath>\\172.16.8.11\Services\PSP 2.0\G2C-B2C Services\MARS Project\encrypt\MPODecryptStaging.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="MPOEncryptStaging">
-      <HintPath>\\172.16.8.11\Services\PSP 2.0\G2C-B2C Services\MARS Project\encrypt\MPOEncryptStaging.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
 
 </Project>

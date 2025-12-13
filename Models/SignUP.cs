@@ -29,7 +29,7 @@ namespace MARS_MELA_PROJECT.Models
         public string LastName { get; set; }
 
 
-        [Required(ErrorMessage = "Please select who created the account")]
-        public string CreatedBy { get; set; }
+        //[Required(ErrorMessage = "Please select who created the account")]
+        //public string CreatedBy { get; set; }
     }
 }
