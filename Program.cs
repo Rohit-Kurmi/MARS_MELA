@@ -14,8 +14,6 @@ builder.Services.Configure<DBConfig>(
 //Reprository registration
 
 builder.Services.AddScoped<User>();
-builder.Services.AddScoped<SignInCheckcs>();
-
 //emailhelper
 builder.Services.AddScoped<EmailHelper>();
 

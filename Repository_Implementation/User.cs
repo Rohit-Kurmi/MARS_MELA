@@ -1,10 +1,12 @@
-﻿using MARS_MELA_PROJECT;
+﻿using Humanizer;
+using MARS_MELA_PROJECT;
 using MARS_MELA_PROJECT.Models;
 using MARS_MELA_PROJECT.Repository;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 using System.Data;
+using System.Diagnostics;
 
 
 namespace MARS_MELA_PROJECT.Repository_Implementation
@@ -40,7 +42,7 @@ namespace MARS_MELA_PROJECT.Repository_Implementation
                 try
                 {
                     using (SqlCommand cmd = new SqlCommand(@"
-IF EXISTS (SELECT 1 FROM Users WHERE MobileNo = @MobileNo)
+IF EXISTS (SELECT 1 FROM Users WHERE MobileNo = @MobileNo and EmailID=@EmailID)
 BEGIN
     SELECT -1 AS Result, NULL AS UserId;
 END
@@ -102,6 +104,70 @@ END
 
 
 
+
+
+        public string CheckOnSignIN(SignIn sign)
+        {
+
+            using (SqlConnection conn = new SqlConnection(cs))
+            {
+                // Query to get verification flags and password hash for given MobileNo
+                SqlCommand cmd = new SqlCommand(
+                    "SELECT EmailVerified, MobileVerified, PasswordHash FROM Users WHERE MobileNo = @MobileNo",
+                    conn
+                );
+
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@MobileNo", sign.MobileNo);
+
+                conn.Open();
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                // If user exists
+                if (dr.Read())
+                {
+                    bool mobileVerified = Convert.ToBoolean(dr["MobileVerified"]);
+                    bool emailVerified = Convert.ToBoolean(dr["EmailVerified"]);
+                    bool hasPassword = dr["PasswordHash"] != DBNull.Value;
+
+                    // Step 1: Mobile OR Email not verified
+                    if (!emailVerified)
+                    {
+                        return "NEED_EMAIL_VERIFICATION";
+                    }
+
+                    if (!mobileVerified)
+                    {
+                        return "NEED_MOBILE_VERIFICATION";
+                    }
+
+                    // Step 2: Password is not created yet
+                    if (!hasPassword)
+                    {
+                        return "CREATE_PASSWORD";
+                    }
+
+                    // Step 3: All good → allow login
+                    return "LOGIN_ALLOWED";
+                }
+                else
+                {
+                    // No user found with this MobileNo
+                    return "USER_NOT_FOUND";
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
         public int emailverificationcheck(string token, string email)
         {
 
@@ -128,15 +194,15 @@ END
 
 
                     if ((now - tokenTime).TotalHours <= 1)
-                        {
-                            return 1;
-                        }
+                    {
+                        return 1;
+                    }
 
-                        else
-                        {
-                            return -1;
-                        }
-                    
+                    else
+                    {
+                        return -1;
+                    }
+
                 }
             }
 
@@ -147,7 +213,7 @@ END
 
         public void updateEmailVerified(string email)
         {
-            DateTime dot= DateTime.Now;
+            DateTime dot = DateTime.Now;
             using SqlConnection conn = new SqlConnection(cs);
             SqlCommand cmd = new SqlCommand(
                 "UPDATE Users SET EmailVerified=1,EmailVerifieddAt=@date WHERE EmailID=@Email", conn);
@@ -225,7 +291,7 @@ END
                     );
 
                     updateCmd.Parameters.AddWithValue("@MobileNo", mob.MobileNo);
-                    updateCmd.Parameters.AddWithValue("@MobileNoVerifiedAt",DOB);
+                    updateCmd.Parameters.AddWithValue("@MobileNoVerifiedAt", DOB);
                     return updateCmd.ExecuteNonQuery() > 0 ? 1 : 0;
                 }
 
@@ -258,6 +324,87 @@ END
                 return cmd.ExecuteNonQuery();
             }
         }
+
+
+        public int SignIn(EnterPassword pass)
+        {
+            DateTime dot = DateTime.Now;
+
+            using (SqlConnection con = new SqlConnection(cs))
+            {
+                con.Open();
+                SqlTransaction trans = con.BeginTransaction();
+
+                try
+                {
+                    // 1️⃣ Get Password
+                    string dbPassword = null;
+                    SqlCommand cmd = new SqlCommand(
+                        "SELECT PasswordHash FROM Users WHERE MobileNo=@MobileNo",
+                        con, trans);
+
+                    cmd.Parameters.AddWithValue("@MobileNo", pass.MobileNo);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            dbPassword = reader["PasswordHash"]?.ToString();
+                        }
+                        else
+                        {
+                            return 0; // user not found
+                        }
+                    }
+
+                    // 2️⃣ Compare password
+                    if (dbPassword != pass.PasswordHash)
+                    {
+                        return -1; // wrong password
+                    }
+
+                    // 3️⃣ Update last login
+                    SqlCommand updateCmd = new SqlCommand(
+                        "UPDATE Users SET LastLoginAt=@LastLoginAt WHERE MobileNo=@MobileNo",
+                        con, trans);
+
+                    updateCmd.Parameters.AddWithValue("@MobileNo", pass.MobileNo);
+                    updateCmd.Parameters.AddWithValue("@LastLoginAt", dot);
+                    updateCmd.ExecuteNonQuery();
+
+                    // 4️⃣ Get RoleID
+                    int roleId = 0;
+                    SqlCommand roleCmd = new SqlCommand(
+                        @"SELECT UR.RoleID 
+                  FROM UserRoleMapping UR
+                  INNER JOIN Users U ON U.UserID = UR.UserID
+                  WHERE U.MobileNo=@MobileNo",
+                        con, trans);
+
+                    roleCmd.Parameters.AddWithValue("@MobileNo", pass.MobileNo);
+
+                    using (SqlDataReader roleReader = roleCmd.ExecuteReader())
+                    {
+                        if (roleReader.Read())
+                        {
+                            roleId = Convert.ToInt32(roleReader["RoleID"]);
+                        }
+                    }
+
+                    // 5️⃣ Commit transaction
+                    trans.Commit();
+
+                    return roleId; // ✅ success
+                }
+                catch (Exception)
+                {
+                    trans.Rollback();
+                    return 0;
+                }
+            }
+        }
+
+
 
 
     }

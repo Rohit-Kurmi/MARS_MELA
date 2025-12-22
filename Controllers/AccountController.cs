@@ -10,15 +10,16 @@ namespace MARS_MELA_PROJECT.Controllers
     public class AccountController : Controller
     {
         private readonly User _use;
-        private readonly SignInCheckcs _sign;
+        //private readonly SignInCheckcs _sign;
         private readonly EmailHelper _emailHelper;
 
 
-        public AccountController(User use, SignInCheckcs sign , EmailHelper emailHelper)
+
+        public AccountController(User use , EmailHelper emailHelper)
         {
             _use = use;
-            _sign = sign;
             _emailHelper = emailHelper;
+           
             
         }
 
@@ -90,7 +91,7 @@ namespace MARS_MELA_PROJECT.Controllers
                     TempData["message"] = "Registration successful! Please check your email for verification.";
                     // Redirect user to OTP verification page
                     return RedirectToAction("Index", "Account");
-                }
+                }   
 
 
 
@@ -245,12 +246,6 @@ namespace MARS_MELA_PROJECT.Controllers
 
 
 
-        public IActionResult EnterPassword()
-        {
-            return View();
-        }
-
-
 
 
         public IActionResult SignIn()
@@ -270,9 +265,7 @@ namespace MARS_MELA_PROJECT.Controllers
 
             try
             {
-
-
-                string result = _sign.CheckOnSignIN(sign);
+                string result = _use.CheckOnSignIN(sign);
 
 
                 // CASE 1: User exists but NOT verified → Send to OTP page
@@ -281,7 +274,6 @@ namespace MARS_MELA_PROJECT.Controllers
                     TempData["Mobile"] = "You Have Recived An Email For Email Verification ";
                     return View();
                 }
-
 
 
                 else if (result == "NEED_MOBILE_VERIFICATION")
@@ -296,7 +288,7 @@ namespace MARS_MELA_PROJECT.Controllers
                 // and then create a new password
                 else if (result == "CREATE_PASSWORD")
                 {
-                    return RedirectToAction("Verification", "Account");
+                    return RedirectToAction("Mobileverification", "Account");
                 }
 
 
@@ -305,7 +297,7 @@ namespace MARS_MELA_PROJECT.Controllers
                 else if (result == "LOGIN_ALLOWED")
                 {
                     TempData["Mobile"] = sign.MobileNo;
-                    return RedirectToAction("EnterPassword");
+                    return RedirectToAction("EnterPassword","Account");
                 }
 
 
@@ -320,10 +312,51 @@ namespace MARS_MELA_PROJECT.Controllers
             {
                 return View();
             }
+        }
 
 
+        public IActionResult EnterPassword()
+        {
+            var model = new EnterPassword()
+            {
+                MobileNo = TempData["Mobile"]?.ToString()
+            };
+            return View(model);
+        }
 
-            return View();
+
+        [HttpPost]
+        public IActionResult EnterPassword(EnterPassword pass)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View(pass);
+            }
+
+            int result =_use.SignIn(pass);
+
+            if (result == 0)
+            {
+                TempData["loginnotfound"] = " User Not Found";
+                return View(pass);
+
+            }
+
+            if (result == -1)
+            {
+                TempData["wrongpassword"] = "Wrong Password";
+                return View(pass);
+
+            }
+
+            if (result == 2)
+            {
+                HttpContext.Session.SetString("MobileNo", pass.MobileNo);
+                return RedirectToAction("Dashbord", "SuperAdmin");
+
+            }
+
+            return View(pass);
         }
 
 
