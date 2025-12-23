@@ -13,7 +13,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="SuperAdmin" asp-action="Dashboard">MARS MELA</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Clitizencompanydashboard" asp-action="CitizenDashboard">MARS MELA</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -26,19 +26,19 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="MyProfile">MyProfile</a>
                         </li> *@
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="SuperAdmin" asp-action="SuperAdminDashboard">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Clitizencompanydashboard" asp-action="CitizenDashboard">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="SuperAdmin" asp-action="TradeFair">Trade Fair/Carnival</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Clitizencompanydashboard" asp-action="MyProfile">My Profil</a>
                         </li>
-                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="SuperAdmin" asp-action="CreateMelaAdmin">Create Mela Admin</a>
-                        </li> 
+                        @* <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Clitizencompanydashboard" asp-action="">shop </a>
+                        </li> *@
                     </ul>
 
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <form asp-controller="SuperAdmin" asp-action="Logout" method="post">
+                            <form asp-controller="Clitizencompanydashboard" asp-action="Logout" method="post">
                                 <button type="submit" class="btn btn-outline-primary">
                                     Logout
                                 </button>
@@ -59,7 +59,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - MARS_MELA_PROJECT - <a asp-area="" asp-controller="SuperAdmin" asp-action="SuperAdminDashboard">Privacy</a>
+            &copy; 2025 - MARS_MELA_PROJECT - <a asp-area="" asp-controller="Clitizencompanydashboard" asp-action="Dashboard">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

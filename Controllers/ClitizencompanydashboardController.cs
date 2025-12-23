@@ -1,20 +1,25 @@
-﻿using MARS_MELA_PROJECT.Models;
+﻿using Azure;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace MARS_MELA_PROJECT.Controllers
 {
-    public class SuperAdmin : Controller
+    public class ClitizencompanydashboardController:Controller
     {
 
 
-        public IActionResult Dashbord()
+
+
+        public IActionResult CitizenDashboard()
         {
+            string session = HttpContext.Session.GetString("CitizenMobileNo");
+
+            if (session == null)
+            {
+                return NotFound();
+            }
+
             return View();
         }
-
-
-
 
 
         [HttpPost]
@@ -29,6 +34,18 @@ namespace MARS_MELA_PROJECT.Controllers
 
             return RedirectToAction("SignIn", "Account"); // Login page
         }
+
+
+       
+
+
+        public IActionResult MyProfile()
+        {
+            return View();
+        }
+
+
+
 
 
     }

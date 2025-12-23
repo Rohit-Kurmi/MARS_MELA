@@ -27,6 +27,16 @@
 }
 
 
+@if (TempData["UserAlready"] != null)
+{
+    <script>
+        alert("@TempData["UserAlready"]");
+    </script>
+}
+
+
+
+
 
 
 <form asp-action="SignIn" asp-controller="Account" method="post">

@@ -1,4 +1,5 @@
 ﻿using MARS_MELA_PROJECT.Models;
+using MARS_MELA_PROJECT.Repository;
 using MARS_MELA_PROJECT.Repository_Implementation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -18,13 +19,9 @@ namespace MARS_MELA_PROJECT.Controllers
         public AccountController(User use , EmailHelper emailHelper)
         {
             _use = use;
-            _emailHelper = emailHelper;
-           
+            _emailHelper = emailHelper; 
             
         }
-
-
-
 
 
 
@@ -32,8 +29,6 @@ namespace MARS_MELA_PROJECT.Controllers
         {
             return View();
         }
-
-
 
 
 
@@ -76,7 +71,7 @@ namespace MARS_MELA_PROJECT.Controllers
                 // CASE 1: User already exists
                 if (res == -1)
                 {
-                    TempData["message"] = "User Already Exists";
+                    TempData["UserAlready"] = "User Already Exists";
 
                     // Redirect user to SignIN page
                     return RedirectToAction("SignIN", "Account");
@@ -86,7 +81,15 @@ namespace MARS_MELA_PROJECT.Controllers
                 else if (res == 1)
                 {
 
-                    _emailHelper.SendVerificationMail(sign.EmailID);
+                    try
+                    {
+                        _emailHelper.SendVerificationMail(sign.EmailID);
+                    }
+                    catch
+                    {
+                        _emailHelper.ClearEmailToken(sign.EmailID);
+                    }
+
 
                     TempData["message"] = "Registration successful! Please check your email for verification.";
                     // Redirect user to OTP verification page
@@ -104,6 +107,8 @@ namespace MARS_MELA_PROJECT.Controllers
                 return View();
             }
         }
+
+
 
 
         [HttpGet]
@@ -315,6 +320,57 @@ namespace MARS_MELA_PROJECT.Controllers
         }
 
 
+
+        public IActionResult ForgotPassword()
+        {
+
+            
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ForgotPassword(ForgotPassword fogpass)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(fogpass);
+            }
+
+            try
+            {
+                // 1️⃣ Check user exists
+                bool isUserExist = _use.IsUserExist(fogpass.EmailID, fogpass.MobileNo);
+
+                if (!isUserExist)
+                {
+                    TempData["frogetpassmessage"] =
+                        "No account found with this email or mobile number.";
+                    return RedirectToAction("ForgotPassword", "Account");
+                }
+
+                // 2️⃣ Send mail first
+                _emailHelper.SendForgotpasswordMail(fogpass.EmailID,fogpass.MobileNo);
+
+                // 3️⃣ Mail success → mark unverified
+                _use.MarkUserUnverifiedForForgot(fogpass.EmailID, fogpass.MobileNo);
+
+                TempData["frogetpassmessage"] =
+                    "Password reset link has been sent to your email.";
+
+                return RedirectToAction("Index", "Account");
+            }
+            catch
+            {
+                TempData["frogetpassmessage"] =
+                    "Unable to send reset email. Please try again later.";
+                return RedirectToAction("ForgotPassword", "Account");
+            }
+        }
+
+
+
+
+
         public IActionResult EnterPassword()
         {
             var model = new EnterPassword()
@@ -349,10 +405,17 @@ namespace MARS_MELA_PROJECT.Controllers
 
             }
 
+            if (result == 1)
+            {
+                HttpContext.Session.SetString("CitizenMobileNo", pass.MobileNo);
+                return RedirectToAction("CitizenDashboard", "Clitizencompanydashboard");
+
+            }
+
             if (result == 2)
             {
-                HttpContext.Session.SetString("MobileNo", pass.MobileNo);
-                return RedirectToAction("Dashbord", "SuperAdmin");
+                HttpContext.Session.SetString("SuperAdminMobileNo", pass.MobileNo);
+                return RedirectToAction("SuperAdminDashboard", "SuperAdmin");
 
             }
 
@@ -360,8 +423,20 @@ namespace MARS_MELA_PROJECT.Controllers
         }
 
 
+       
 
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
 
+            // Cache prevent (back button issue)
+            Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+            Response.Headers["Pragma"] = "no-cache";
+            Response.Headers["Expires"] = "0";
+
+            return RedirectToAction("SignIn", "Account"); // Login page
+        }
 
 
 

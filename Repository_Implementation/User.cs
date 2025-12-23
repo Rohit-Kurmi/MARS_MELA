@@ -2,6 +2,7 @@
 using MARS_MELA_PROJECT;
 using MARS_MELA_PROJECT.Models;
 using MARS_MELA_PROJECT.Repository;
+using MARS_MELA_PROJECT.Repository_Interface;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
@@ -13,12 +14,13 @@ namespace MARS_MELA_PROJECT.Repository_Implementation
 {
     public class User : IUser
     {
-
+        private readonly EmailHelper _emailHelper;
         private readonly string cs;
 
-        public User(IOptions<DBConfig> options)
+        public User(IOptions<DBConfig> options, EmailHelper emailHelper)
         {
             cs = options.Value.DefaultConnection;
+            _emailHelper = emailHelper;
         }
 
 
@@ -42,7 +44,7 @@ namespace MARS_MELA_PROJECT.Repository_Implementation
                 try
                 {
                     using (SqlCommand cmd = new SqlCommand(@"
-IF EXISTS (SELECT 1 FROM Users WHERE MobileNo = @MobileNo and EmailID=@EmailID)
+IF EXISTS (SELECT 1 FROM Users WHERE MobileNo = @MobileNo OR EmailID=@EmailID)
 BEGIN
     SELECT -1 AS Result, NULL AS UserId;
 END
@@ -88,11 +90,22 @@ END
                             }
                         }
                     }
+                    if (result == -1)
+                    {
+                        tran.Rollback();
+                        return -1;
+                    }
+
+                   
 
                     // COMMIT
                     tran.Commit();
+                   
                     return result;
                 }
+
+
+
                 catch
                 {
                     // ROLLBACK if anything fails
@@ -404,6 +417,51 @@ END
             }
         }
 
+
+
+
+        public bool IsUserExist(string email, string mobile)
+        {
+            using (SqlConnection conn = new SqlConnection(cs))
+            {
+                SqlCommand cmd = new SqlCommand(
+                    "SELECT 1 FROM Users WHERE EmailID=@Email AND MobileNo=@Mobile",
+                    conn);
+
+                cmd.Parameters.AddWithValue("@Email", email);
+                cmd.Parameters.AddWithValue("@Mobile", mobile);
+
+                conn.Open();
+                var result = cmd.ExecuteScalar();
+
+                return result != null;
+            }
+        }
+
+
+
+        public void MarkUserUnverifiedForForgot(string email, string mobile)
+        {
+            using (SqlConnection conn = new SqlConnection(cs))
+            {
+                SqlCommand cmd = new SqlCommand(@"
+            UPDATE Users
+            SET 
+                EmailVerified = 0,
+                MobileVerified = 0,
+                Status = 0
+               
+            WHERE EmailID = @Email AND MobileNo = @Mobile
+        ", conn);
+
+                cmd.Parameters.AddWithValue("@dt", DateTime.Now);
+                cmd.Parameters.AddWithValue("@Email", email);
+                cmd.Parameters.AddWithValue("@Mobile", mobile);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
 
 
 

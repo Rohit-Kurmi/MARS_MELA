@@ -4,5 +4,6 @@
     {
         public void SendMail(string to, string subject, string body);
         public void SendVerificationMail(string email);
+        public void SendForgotpasswordMail(string email, string Mobile);
     }
 }
