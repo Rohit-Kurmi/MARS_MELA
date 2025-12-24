@@ -4,6 +4,8 @@ using MARS_MELA_PROJECT.Repository_Implementation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using PortalLib.Framework.Utilities;
+
 
 //using PortalLib.Framework.Utilities;
 using System.Diagnostics;
@@ -116,11 +118,14 @@ namespace MARS_MELA_PROJECT.Controllers
         [HttpGet]
         public IActionResult EmailVerify(string token, string email,string mobile)
         {
+            
             if(string.IsNullOrEmpty(token))
             {
                 TempData["invalidtoken"] = "Invalid token";
                 return RedirectToAction("SignIn", "Account");
             }
+
+            email = PortalEncryption.DecryptPasswordNew(email);
 
             int result=_use.emailverificationcheck(token, email);
 
@@ -133,6 +138,7 @@ namespace MARS_MELA_PROJECT.Controllers
 
             else if (result == -1)
             {
+                email = PortalEncryption.EncryptPasswordNew(email);
 
                 return RedirectToAction("VerificationExpired","Account", new { email = email,mobile=mobile });
             }
@@ -156,7 +162,10 @@ namespace MARS_MELA_PROJECT.Controllers
             {
                 return NotFound();
             }
-
+            email = PortalEncryption.DecryptPasswordNew(email);
+            mobile = PortalEncryption.DecryptPasswordNew(mobile);
+           
+           
             var model = new ForgotPassword()
             {
                 EmailID = email,
@@ -269,11 +278,11 @@ namespace MARS_MELA_PROJECT.Controllers
 
 
 
-                //string hasspassword = PortalEncryption.GetSHA512(creatpass.PasswordHash);
+                string hasspassword = PortalEncryption.GetSHA512(creatpass.PasswordHash);
 
                 // Step 2: Save the hashed password in the database
                 // DAL.SavePassword returns the number of rows affected
-                int result = _use.SavePassword(creatpass.MobileNo, creatpass.PasswordHash);
+                int result = _use.SavePassword(creatpass.MobileNo, hasspassword);
 
                 // Step 3: Check if the password was saved successfully
                 if (result > 0)

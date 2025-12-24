@@ -1,6 +1,7 @@
 ﻿using MARS_MELA_PROJECT.Repository_Interface;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
+using PortalLib.Framework.Utilities;
 using System.Data;
 using System.Net;
 using System.Net.Mail;
@@ -60,6 +61,7 @@ WHERE EmailID = @Email And MobileNo=@@MobileNo", conn);
         // SEND VERIFICATION EMAIL
         public void SendVerificationMail(string email,string mobile)
         {
+            string Email = email;
             string token = Guid.NewGuid().ToString();
             DateTime generatedAt = DateTime.Now;
 
@@ -79,7 +81,8 @@ WHERE EmailID = @Email And MobileNo=@@MobileNo", conn);
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
-
+            email = PortalEncryption.EncryptPasswordNew(email);
+            mobile = PortalEncryption.EncryptPasswordNew(mobile);
             string verifyUrl = $"https://localhost:7114/Account/EmailVerify?token={token}&email={email}&mobile={mobile}";
 
 
@@ -156,8 +159,8 @@ WHERE EmailID = @Email And MobileNo=@@MobileNo", conn);
 </body>
 </html>";
 
-
-            SendMail(email, "Verify Your Email", body);
+           
+            SendMail(Email, "Verify Your Email", body);
         }
 
     
@@ -167,6 +170,7 @@ WHERE EmailID = @Email And MobileNo=@@MobileNo", conn);
 
         public void SendForgotpasswordMail(string email,string Mobile)
         {
+            string Email = email;
             string token = Guid.NewGuid().ToString();
             DateTime generatedAt = DateTime.Now;
 
@@ -186,7 +190,8 @@ WHERE EmailID = @Email And MobileNo=@@MobileNo", conn);
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
-
+            email = PortalEncryption.EncryptPasswordNew(email);
+            Mobile = PortalEncryption.EncryptPasswordNew(Mobile);
             string resetUrl = $"https://localhost:7114/Account/EmailVerify?token={token}&email={email}&mobile={Mobile}";
 
             
@@ -268,9 +273,9 @@ If you did not request a password reset, please ignore this email.
 </body>
 </html>";
 
+           
 
-
-            SendMail(email, "Reset Your Password - MARS MELA", body);
+            SendMail(Email, "Reset Your Password - MARS MELA", body);
         }
 
     }

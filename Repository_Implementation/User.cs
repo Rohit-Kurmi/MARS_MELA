@@ -6,6 +6,7 @@ using MARS_MELA_PROJECT.Repository_Interface;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
+using PortalLib.Framework.Utilities;
 using System.Data;
 using System.Diagnostics;
 
@@ -397,6 +398,7 @@ END
 
                 try
                 {
+                    string userpassword = PortalEncryption.GetSHA512(pass.PasswordHash);
                     // 1️⃣ Get Password
                     string dbPassword = null;
                     SqlCommand cmd = new SqlCommand(
@@ -418,7 +420,7 @@ END
                     }
 
                     // 2️⃣ Compare password
-                    if (dbPassword != pass.PasswordHash)
+                    if (dbPassword != userpassword)
                     {
                         return -1; // wrong password
                     }
