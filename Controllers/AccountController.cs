@@ -3,6 +3,8 @@ using MARS_MELA_PROJECT.Repository;
 using MARS_MELA_PROJECT.Repository_Implementation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+
 //using PortalLib.Framework.Utilities;
 using System.Diagnostics;
 
@@ -83,11 +85,11 @@ namespace MARS_MELA_PROJECT.Controllers
 
                     try
                     {
-                        _emailHelper.SendVerificationMail(sign.EmailID);
+                        _emailHelper.SendVerificationMail(sign.EmailID,sign.MobileNo);
                     }
                     catch
                     {
-                        _emailHelper.ClearEmailToken(sign.EmailID);
+                        _emailHelper.ClearEmailToken(sign.EmailID,sign.MobileNo);
                     }
 
 
@@ -112,7 +114,7 @@ namespace MARS_MELA_PROJECT.Controllers
 
 
         [HttpGet]
-        public IActionResult EmailVerify(string token, string email)
+        public IActionResult EmailVerify(string token, string email,string mobile)
         {
             if(string.IsNullOrEmpty(token))
             {
@@ -132,7 +134,7 @@ namespace MARS_MELA_PROJECT.Controllers
             else if (result == -1)
             {
 
-                return Content("Token expired! Please resend verification email.");
+                return RedirectToAction("VerificationExpired","Account", new { email = email,mobile=mobile });
             }
             else if (result == 2)
             {
@@ -145,7 +147,42 @@ namespace MARS_MELA_PROJECT.Controllers
         }
 
 
-        
+        [HttpGet]
+        public IActionResult VerificationExpired(string email,string mobile)
+        {
+
+
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(mobile))
+            {
+                return NotFound();
+            }
+
+            var model = new ForgotPassword()
+            {
+                EmailID = email,
+                MobileNo = mobile
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult VerificationExpired(ForgotPassword model)
+        {
+            if (string.IsNullOrEmpty(model.EmailID))
+            {
+                TempData["error"] = "Invalid request.";
+                return RedirectToAction("SignIn");
+            }
+
+            // 👉 New token generate + mail send
+            _emailHelper.SendVerificationMail(model.EmailID, model.MobileNo);
+
+            TempData["resendvarifymail"] =
+                "Verification email has been resent. Please check your inbox.";
+
+            return RedirectToAction("Index","Account");
+        }
 
 
 

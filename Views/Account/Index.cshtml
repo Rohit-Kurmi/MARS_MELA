@@ -12,7 +12,12 @@
     </script>
 }
 
-
+@if (TempData["resendvarifymail"] != null)
+{
+    <script>
+        alert("@TempData["resendvarifymail"]");
+    </script>
+}
 
 
 <div class="text-center">

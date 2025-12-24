@@ -206,7 +206,7 @@ END
                     }
 
 
-                    if ((now - tokenTime).TotalHours <= 1)
+                    if ((now - tokenTime).TotalHours <= 0.0167)
                     {
                         return 1;
                     }

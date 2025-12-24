@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using System.Data;
 using System.Net;
 using System.Net.Mail;
+using System.Reflection;
 
 namespace MARS_MELA_PROJECT.Repository_Implementation
 {
@@ -18,7 +19,7 @@ namespace MARS_MELA_PROJECT.Repository_Implementation
 
 
 
-        public void ClearEmailToken(string email)
+        public void ClearEmailToken(string email,string mobile)
         {
             using (SqlConnection conn = new SqlConnection(_cs))
             {
@@ -26,9 +27,10 @@ namespace MARS_MELA_PROJECT.Repository_Implementation
 UPDATE Users
 SET EmailVerificationToken = NULL,
     TokenGeneratedAt = NULL
-WHERE EmailID = @Email", conn);
+WHERE EmailID = @Email And MobileNo=@@MobileNo", conn);
 
                 cmd.Parameters.AddWithValue("@Email", email);
+                cmd.Parameters.AddWithValue("@@MobileNo", mobile);
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
@@ -56,7 +58,7 @@ WHERE EmailID = @Email", conn);
         }
 
         // SEND VERIFICATION EMAIL
-        public void SendVerificationMail(string email)
+        public void SendVerificationMail(string email,string mobile)
         {
             string token = Guid.NewGuid().ToString();
             DateTime generatedAt = DateTime.Now;
@@ -78,7 +80,7 @@ WHERE EmailID = @Email", conn);
                 cmd.ExecuteNonQuery();
             }
 
-            string verifyUrl = $"https://localhost:7114/Account/EmailVerify?token={token}&email={email}";
+            string verifyUrl = $"https://localhost:7114/Account/EmailVerify?token={token}&email={email}&mobile={mobile}";
 
 
 

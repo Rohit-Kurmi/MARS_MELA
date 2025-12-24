@@ -1,0 +1,41 @@
+﻿@model MARS_MELA_PROJECT.Models.ForgotPassword;
+@{
+    ViewData["Title"] = "VerificationExpired";
+}
+
+
+<h3>Email Verification Expired</h3>
+
+<p>Your verification link has expired.</p>
+
+<form asp-action="VerificationExpired" asp-controller="Account" method="post">
+
+
+
+    <div class="row">
+        <div class="col-sm-4">
+
+
+            <input asp-for="MobileNo" class="form-control" readonly />
+            <span asp-validation-for="MobileNo" class="text-danger"></span>
+        </div>
+    </div>
+
+    <br />  <br />
+
+    <div class="row">
+        <div class="col-sm-4">
+
+
+            <input asp-for="EmailID" class="form-control" readonly />
+            <span asp-validation-for="EmailID" class="text-danger"></span>
+        </div>
+    </div>
+
+
+
+    <br />  <br />
+    <button type="submit" class="btn btn-primary">
+        Resend Verification Email
+    </button>
+</form>
