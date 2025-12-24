@@ -242,28 +242,75 @@ END
 
         public string GenerateAndSaveOTP(Mobileverification mob)
         {
-            string otp = new Random().Next(100000, 999999).ToString();
-
             using (SqlConnection conn = new SqlConnection(cs))
             {
-                SqlCommand cmd = new SqlCommand(
-                    @"UPDATE Users 
-              SET OTPCode = @otp, 
-                  OTPGeneratedAt = @OTPGeneratedAt
-              WHERE MobileNo = @MobileNo",
-                    conn
-                );
-
-                cmd.Parameters.AddWithValue("@MobileNo", mob.MobileNo);
-                cmd.Parameters.AddWithValue("@otp", otp);
-                cmd.Parameters.AddWithValue("@OTPGeneratedAt", DateTime.Now);
-
                 conn.Open();
-                int rows = cmd.ExecuteNonQuery();
 
+                SqlCommand checkCmd = new SqlCommand(
+                @"SELECT OTPGeneratedAt, OTPAttempts 
+          FROM Users WHERE MobileNo=@MobileNo", conn);
+
+                checkCmd.Parameters.AddWithValue("@MobileNo", mob.MobileNo);
+
+                DateTime? lastGenerated = null;
+                int attempts = 0;
+
+                using (SqlDataReader dr = checkCmd.ExecuteReader())
+                {
+                    if (dr.Read())
+                    {
+                        lastGenerated = dr["OTPGeneratedAt"] == DBNull.Value
+                            ? (DateTime?)null
+                            : Convert.ToDateTime(dr["OTPGeneratedAt"]);
+
+                        attempts = dr["OTPAttempts"] == DBNull.Value
+                            ? 0
+                            : Convert.ToInt32(dr["OTPAttempts"]);
+                    }
+                }
+
+                // ⏱️ 1 MINUTE RESEND BLOCK
+                if (lastGenerated != null &&
+                    (DateTime.Now - lastGenerated.Value).TotalMinutes < 1)
+                {
+                    return "WAIT_1_MIN"; // special flag
+                }
+
+                // 🔴 3 OTP → BLOCK FOR 1 HOUR
+                if (attempts >= 3 && lastGenerated != null &&
+                    (DateTime.Now - lastGenerated.Value).TotalHours < 1)
+                {
+                    return "BLOCK_1_HOUR";
+                }
+
+                // 🔁 1 HOUR PASSED → RESET ATTEMPTS
+                if (attempts >= 3 && lastGenerated != null &&
+                    (DateTime.Now - lastGenerated.Value).TotalHours >= 1)
+                {
+                    attempts = 0;
+                }
+
+                // ✅ GENERATE OTP
+                string otp = new Random(Guid.NewGuid().GetHashCode())
+                                .Next(100000, 999999).ToString();
+
+                SqlCommand genCmd = new SqlCommand(
+                @"UPDATE Users 
+          SET OTPCode=@OTP,
+              OTPGeneratedAt=@GeneratedAt,
+              OTPAttempts=@Attempts
+          WHERE MobileNo=@MobileNo", conn);
+
+                genCmd.Parameters.AddWithValue("@OTP", otp);
+                genCmd.Parameters.AddWithValue("@GeneratedAt", DateTime.Now);
+                genCmd.Parameters.AddWithValue("@Attempts", attempts + 1);
+                genCmd.Parameters.AddWithValue("@MobileNo", mob.MobileNo);
+
+                int rows = genCmd.ExecuteNonQuery();
                 return rows > 0 ? otp : "";
             }
         }
+
 
 
 
@@ -293,8 +340,8 @@ END
                     if (storedOtp != mob.OTPCode)
                         return 0;
 
-                    // OTP expired (valid for 2 minutes)
-                    if ((DateTime.Now - generatedTime).TotalMinutes > 2)
+                    // OTP expired (valid for 1 minutes)
+                    if ((DateTime.Now - generatedTime).TotalMinutes > 1)
                         return -1;
 
                     // Update mobile verified

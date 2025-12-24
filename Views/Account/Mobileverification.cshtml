@@ -12,8 +12,6 @@
     </script>
 }
 
-
-
 <form asp-action="Mobileverification" asp-controller="Account" method="post">
     <div class="container">
 
@@ -22,17 +20,12 @@
         <!-- Mobile -->
         <div class="row">
             <div class="col-sm-4">
-               
-                
-                    <input asp-for="MobileNo" class="form-control" placeholder="MobileNo" />
-                    <span asp-validation-for="MobileNo" class="text-danger"></span>
-                
+                <input asp-for="MobileNo" class="form-control" placeholder="MobileNo" />
+                <span asp-validation-for="MobileNo" class="text-danger"></span>
             </div>
         </div>
 
         <br /><br />
-
-       
 
         <!-- OTP -->
         <div class="row">
@@ -43,7 +36,15 @@
             </div>
 
             <div class="col-sm-2">
-                <input type="submit" value="Send_OTP" name="actiontype" class="btn btn-outline-primary w-100" />
+                <!-- Send / Resend OTP Button -->
+                <button type="submit" id="otp-btn" name="actiontype" value="Send_OTP" class="btn btn-outline-primary w-100">
+                    Send OTP
+                </button>
+
+                <!-- Countdown Timer -->
+                <div id="otp-timer" class="mt-2" style="display:none;">
+                    Please wait <span id="timer">60</span> seconds to resend OTP.
+                </div>
 
                 @if (TempData["OTPMessage"] != null)
                 {
@@ -68,3 +69,38 @@
 
     </div>
 </form>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Only start timer if backend says so
+            var startTimer = "@TempData["StartOTPTimer"]";
+            if(startTimer === "true") {
+                startOtpTimer();
+            }
+        });
+
+        function startOtpTimer() {
+            var otpBtn = document.getElementById('otp-btn');
+            var timerDiv = document.getElementById('otp-timer');
+            var timerSpan = document.getElementById('timer');
+
+            otpBtn.disabled = true;
+            timerDiv.style.display = 'block';
+
+            var timeLeft = 60; // seconds
+            timerSpan.textContent = timeLeft;
+
+            var countdown = setInterval(function() {
+                timeLeft--;
+                timerSpan.textContent = timeLeft;
+
+                if(timeLeft <= 0){
+                    clearInterval(countdown);
+                    otpBtn.disabled = false; // enable button
+                    timerDiv.style.display = 'none'; // hide timer
+                }
+            }, 1000);
+        }
+    </script>
+}

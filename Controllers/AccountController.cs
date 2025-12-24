@@ -166,8 +166,19 @@ namespace MARS_MELA_PROJECT.Controllers
 
                 string otp = _use.GenerateAndSaveOTP(mob);
 
-                if (!string.IsNullOrEmpty(otp))
+                if (otp == "WAIT_1_MIN")
+                {
+                    TempData["Error"] = "Please wait 1 minute before resending OTP.";
+                }
+                else if (otp == "BLOCK_1_HOUR")
+                {
+                    TempData["Error"] = "OTP limit reached. Try again after 1 hour.";
+                }
+                else if (!string.IsNullOrEmpty(otp))
+                {
                     TempData["OTPMessage"] = $"Your OTP is {otp}";
+                    TempData["StartOTPTimer"] = "true"; // Flag for JS timer
+                }
 
                 return View(mob);
             }
@@ -198,6 +209,8 @@ namespace MARS_MELA_PROJECT.Controllers
 
             return View(mob);
         }
+
+
 
 
         public IActionResult CreatePassword()
