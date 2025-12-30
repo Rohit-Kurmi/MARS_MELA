@@ -1,0 +1,72 @@
+﻿@model MARS_MELA_PROJECT.Models.MelaAdmin
+
+@{
+    ViewData["Title"] = "MelaAdmin";
+}
+
+<h1>MelaAdmin</h1>
+
+
+
+
+<form asp-action="MelaAdmin" asp-controller="SuperAdmin" method="post">
+    <div class="container">
+      
+
+
+        <br /><br />
+        <div class="row">
+            <div class="col-sm-4">
+                <input asp-for="FirstName" class="form-control" placeholder="First Name" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <br /><br />
+        <div class="row">
+            <div class="col-sm-4">
+                <input asp-for="LastName" class="form-control " placeholder="Last Name" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <br /><br />
+        <div class="row">
+            <div class="col-sm-4">
+                <input asp-for="MobileNo" class="form-control" placeholder="Mobile No." />
+                <span asp-validation-for="MobileNo" class="text-danger"></span>
+            </div>
+        </div>
+        <br /><br />
+        <div class="row">
+            <div class="col-sm-4">
+                <input asp-for="EmailID" class="form-control" placeholder="Email ID" />
+                <span asp-validation-for="EmailID" class="text-danger"></span>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-4">
+                <input asp-for="PasswordHash" class="form-control" placeholder="New Password" />
+                <span asp-validation-for="PasswordHash" class="text-danger"></span>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-4">
+                <input asp-for="ConfirmPassword" class="form-control" placeholder="confirm Password" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+        </div>
+        <br />
+
+
+
+        <div class="row">
+            <div class="col-sm-4">
+                <input type="submit" class="btn btn-outline-primary  w-100" value="SignUp" />
+            </div>
+        </div>
+
+    </div>
+</form>

@@ -14,6 +14,7 @@ builder.Services.Configure<DBConfig>(
 //Reprository registration
 
 builder.Services.AddScoped<User>();
+builder.Services.AddScoped<SuperAdmin>();
 //emailhelper
 builder.Services.AddScoped<EmailHelper>();
 
