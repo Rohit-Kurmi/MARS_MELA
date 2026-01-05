@@ -65,6 +65,7 @@ namespace MARS_MELA_PROJECT.Controllers
             {
                 return View(CTF);
             }
+
             string session = HttpContext.Session.GetString("SuperAdminMobileNo");
             _supad.AddTraid(CTF, session);
 
@@ -76,25 +77,53 @@ namespace MARS_MELA_PROJECT.Controllers
 
         public IActionResult MelaAdmin()
         {
-            return View();
+            UserViewModel vm = new UserViewModel();
+            vm.Rolesdropdowns = _supad.GetRoles(); // repository call
+            vm.MelaAdmin = new MelaAdmin();
+
+
+            return View(vm);
         }
 
+        
         [HttpPost]
-        public IActionResult MelaAdmin(MelaAdmin MEAL)
+        public IActionResult MelaAdmin(UserViewModel model)
         {
+            // 🔴 IMPORTANT: dropdown data always reload
+            model.Rolesdropdowns = _supad.GetRoles();
 
             if (!ModelState.IsValid)
             {
-                return View(MEAL);
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                        Console.WriteLine($"KEY: {state.Key}, ERROR: {error.ErrorMessage}");
+                    }
+                }
+
             }
 
-            string session = HttpContext.Session.GetString("SuperAdminMobileNo");
-            _supad.MelaAdmin(MEAL, session);
+            // ✅ Safe assignment
+            model.MelaAdmin.RoleID = model.RoleID.Value;
 
+            string session = HttpContext.Session.GetString("SuperAdminMobileNo");
+
+            try
+            {
+                _supad.MelaAdmin(model.MelaAdmin, session);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                model.Rolesdropdowns = _supad.GetRoles();
+                return View(model);
+            }
+
+            
 
             return RedirectToAction("SuperAdminDashboard", "SuperAdmin");
         }
-
 
 
 

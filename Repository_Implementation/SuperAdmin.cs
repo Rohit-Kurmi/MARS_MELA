@@ -124,60 +124,134 @@ namespace MARS_MELA_PROJECT.Repository_Implementation
 
 
 
-        public void MelaAdmin(MelaAdmin MEAL,string session)
+        public List<RolesdropDown> GetRoles()
         {
+            List<RolesdropDown> roles =new List<RolesdropDown>();
+
+            using(SqlConnection conn =new SqlConnection(cs))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT RoleID, RoleName FROM UserRoles", conn);
+                cmd.CommandType = CommandType.Text;
+                conn.Open();
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    roles.Add(new RolesdropDown
+                    {
+                        RoleID = Convert.ToInt32(dr["RoleID"]),
+                        RoleName = dr["RoleName"].ToString()
+                    });
+                }
+            }
 
 
+            return roles;
+
+        }
+
+
+        public void MelaAdmin(MelaAdmin MEAL, string session)
+        {
             DateTime dot = DateTime.Now;
             int verified = 1;
 
-            string querry = "INSERT INTO Users\r\n (FirstName,LastName,PasswordHash,MobileNo,MobileNoVerifiedAt,MobileVerified ,EmailID,EmailVerified,EmailVerifieddAt,Status,CreatedAt,CreatedBy)\r\n   " +
-                " VALUES(@FirstName,@LastName,@PasswordHash,@MobileNo,@MobileNoVerifiedAt,@MobileVerified,@EmailID,@EmailVerified,@EmailVerifieddAt,@Status,@CreatedAt,@CreatedBy);\r\n";
             string password = PortalEncryption.GetSHA512(MEAL.PasswordHash);
-            using(SqlConnection conn=new SqlConnection(cs))
+
+            using (SqlConnection conn = new SqlConnection(cs))
             {
                 conn.Open();
-                // 🔹 1️⃣ Get UserId (transaction ke andar)
-                long createdByUserId;
+                SqlTransaction tran = conn.BeginTransaction();
 
-                string userQuery = "SELECT UserID FROM Users WHERE MobileNo = @MobileNo";
-
-                using (SqlCommand cmd1 = new SqlCommand(userQuery, conn))
+                try
                 {
-                    cmd1.Parameters.AddWithValue("@MobileNo", session);
-                    object result = cmd1.ExecuteScalar();
+                    // 🔹 1️⃣ Get SuperAdmin UserID (AssignedBy)
+                    long createdByUserId;
 
-                    if (result == null)
-                        throw new Exception("User not found");
+                    string userQuery = "SELECT UserID FROM Users WHERE MobileNo = @MobileNo";
 
-                    createdByUserId = Convert.ToInt64(result);
+                    using (SqlCommand cmd = new SqlCommand(userQuery, conn, tran))
+                    {
+                        cmd.Parameters.AddWithValue("@MobileNo", session);
+                        createdByUserId = Convert.ToInt64(cmd.ExecuteScalar());
+                    }
+
+                    // 🔹 2️⃣ Check if user already exists by MobileNo or EmailID
+                    string checkUserQuery = "SELECT COUNT(*) FROM Users WHERE MobileNo = @MobileNo OR EmailID = @EmailID";
+                    using (SqlCommand cmd = new SqlCommand(checkUserQuery, conn, tran))
+                    {
+                        cmd.Parameters.AddWithValue("@MobileNo", MEAL.MobileNo);
+                        cmd.Parameters.AddWithValue("@EmailID", MEAL.EmailID);
+
+                        int userExists = (int)cmd.ExecuteScalar();
+                        if (userExists > 0)
+                        {
+                            throw new Exception("User with this MobileNo or EmailID already exists.");
+                        }
+                    }
+
+                    // 🔹 3️⃣ Insert into Users & get NEW UserID
+                    string insertUserQuery = @"
+                INSERT INTO Users
+                (FirstName, LastName, PasswordHash, MobileNo,
+                 MobileNoVerifiedAt, MobileVerified,
+                 EmailID, EmailVerified, EmailVerifieddAt,
+                 Status, CreatedAt, CreatedBy)
+                VALUES
+                (@FirstName, @LastName, @PasswordHash, @MobileNo,
+                 @MobileNoVerifiedAt, @MobileVerified,
+                 @EmailID, @EmailVerified, @EmailVerifieddAt,
+                 @Status, @CreatedAt, @CreatedBy);
+
+                SELECT CAST(SCOPE_IDENTITY() AS BIGINT);";
+
+                    long newUserId;
+
+                    using (SqlCommand cmd = new SqlCommand(insertUserQuery, conn, tran))
+                    {
+                        cmd.Parameters.AddWithValue("@FirstName", MEAL.FirstName);
+                        cmd.Parameters.AddWithValue("@LastName", MEAL.LastName);
+                        cmd.Parameters.AddWithValue("@PasswordHash", password);
+                        cmd.Parameters.AddWithValue("@MobileNo", MEAL.MobileNo);
+                        cmd.Parameters.AddWithValue("@MobileNoVerifiedAt", dot);
+                        cmd.Parameters.AddWithValue("@MobileVerified", verified);
+                        cmd.Parameters.AddWithValue("@EmailID", MEAL.EmailID);
+                        cmd.Parameters.AddWithValue("@EmailVerified", verified);
+                        cmd.Parameters.AddWithValue("@EmailVerifieddAt", dot);
+                        cmd.Parameters.AddWithValue("@Status", verified);
+                        cmd.Parameters.AddWithValue("@CreatedAt", dot);
+                        cmd.Parameters.AddWithValue("@CreatedBy", createdByUserId);
+
+                        newUserId = (long)cmd.ExecuteScalar();
+                    }
+
+                    // 🔹 4️⃣ Insert into UserRoleMapping
+                    string roleMapQuery = @"
+                INSERT INTO UserRoleMapping
+                (UserID, RoleID, AssignedAt, AssignedBy)
+                VALUES
+                (@UserID, @RoleID, @AssignedAt, @AssignedBy)";
+
+                    using (SqlCommand cmd = new SqlCommand(roleMapQuery, conn, tran))
+                    {
+                        cmd.Parameters.AddWithValue("@UserID", newUserId);
+                        cmd.Parameters.AddWithValue("@RoleID", MEAL.RoleID);
+                        cmd.Parameters.AddWithValue("@AssignedAt", DateTime.UtcNow);
+                        cmd.Parameters.AddWithValue("@AssignedBy", createdByUserId);
+
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // ✅ 5️⃣ Commit transaction
+                    tran.Commit();
                 }
-
-
-
-
-                SqlCommand cmd = new SqlCommand(querry, conn);
-                cmd.CommandType = CommandType.Text;
-
-                cmd.Parameters.AddWithValue("@FirstName",MEAL.FirstName);
-                cmd.Parameters.AddWithValue("@LastName",MEAL.LastName);
-                cmd.Parameters.AddWithValue("@PasswordHash", password);
-                cmd.Parameters.AddWithValue("@MobileNo",MEAL.MobileNo);
-                cmd.Parameters.AddWithValue("@MobileNoVerifiedAt", dot);
-                cmd.Parameters.AddWithValue("@MobileVerified", verified);
-                cmd.Parameters.AddWithValue("@EmailID",MEAL.EmailID);
-                cmd.Parameters.AddWithValue("@EmailVerified", verified);
-                cmd.Parameters.AddWithValue("@EmailVerifieddAt",dot);
-                cmd.Parameters.AddWithValue("@Status", verified);
-                cmd.Parameters.AddWithValue("@CreatedAt", dot);
-                cmd.Parameters.AddWithValue("@CreatedBy", createdByUserId);
-
-                
-                cmd.ExecuteNonQuery();
-
+                catch
+                {
+                    tran.Rollback();
+                    throw;
+                }
             }
-
         }
+
 
 
 

@@ -4,6 +4,7 @@ namespace MARS_MELA_PROJECT.Models
 {
     public class MelaAdmin
     {
+        public int RoleID { get; set; }
 
         [Required(ErrorMessage = "Mobile number required")]
         [RegularExpression(@"^\d{10}$", ErrorMessage = "Mobile must be 10 digits")]

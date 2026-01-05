@@ -1,10 +1,19 @@
-﻿@model MARS_MELA_PROJECT.Models.MelaAdmin
+﻿@model MARS_MELA_PROJECT.Models.UserViewModel
+
 
 @{
     ViewData["Title"] = "MelaAdmin";
 }
 
 <h1>MelaAdmin</h1>
+
+<!-- 🔴 Validation Summary for general errors -->
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @Html.ValidationSummary(false)
+    </div>
+}
 
 
 
@@ -17,45 +26,65 @@
         <br /><br />
         <div class="row">
             <div class="col-sm-4">
-                <input asp-for="FirstName" class="form-control" placeholder="First Name" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
+                <input asp-for="MelaAdmin.FirstName" class="form-control" placeholder="First Name" />
+                <span asp-validation-for="MelaAdmin.FirstName" class="text-danger"></span>
             </div>
         </div>
 
         <br /><br />
         <div class="row">
             <div class="col-sm-4">
-                <input asp-for="LastName" class="form-control " placeholder="Last Name" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
+                <input asp-for="MelaAdmin.LastName" class="form-control " placeholder="Last Name" />
+                <span asp-validation-for="MelaAdmin.LastName" class="text-danger"></span>
             </div>
         </div>
 
         <br /><br />
         <div class="row">
             <div class="col-sm-4">
-                <input asp-for="MobileNo" class="form-control" placeholder="Mobile No." />
-                <span asp-validation-for="MobileNo" class="text-danger"></span>
+                <input asp-for="MelaAdmin.MobileNo" class="form-control" placeholder="Mobile No." />
+                <span asp-validation-for="MelaAdmin.MobileNo" class="text-danger"></span>
             </div>
         </div>
         <br /><br />
         <div class="row">
             <div class="col-sm-4">
-                <input asp-for="EmailID" class="form-control" placeholder="Email ID" />
-                <span asp-validation-for="EmailID" class="text-danger"></span>
+                <input asp-for="MelaAdmin.EmailID" class="form-control" placeholder="Email ID" />
+                <span asp-validation-for="MelaAdmin.EmailID" class="text-danger"></span>
+            </div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-sm-4">
+                @if (Model.Rolesdropdowns != null)
+                {
+                    <select asp-for="RoleID"
+                            asp-items="@(new SelectList(Model.Rolesdropdowns, "RoleID", "RoleName"))"
+                            class="form-control">
+                        <option value="">-- Select Role --</option>
+
+                    </select>
+                }
+                <span asp-validation-for="RoleID" class="text-danger"></span>
+
+
+
+            </div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-sm-4">
+                <input asp-for="MelaAdmin.PasswordHash" class="form-control" placeholder="New Password" />
+                <span asp-validation-for="MelaAdmin.PasswordHash" class="text-danger"></span>
             </div>
         </div>
         <br />
         <div class="row">
             <div class="col-sm-4">
-                <input asp-for="PasswordHash" class="form-control" placeholder="New Password" />
-                <span asp-validation-for="PasswordHash" class="text-danger"></span>
-            </div>
-        </div>
-        <br />
-        <div class="row">
-            <div class="col-sm-4">
-                <input asp-for="ConfirmPassword" class="form-control" placeholder="confirm Password" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                <input asp-for="MelaAdmin.ConfirmPassword" class="form-control" placeholder="confirm Password" />
+                <span asp-validation-for="MelaAdmin.ConfirmPassword" class="text-danger"></span>
             </div>
         </div>
         <br />
