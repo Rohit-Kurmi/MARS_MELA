@@ -1,70 +1,63 @@
-﻿@model MARS_MELA_PROJECT.Models.SignIn;
+﻿@model MARS_MELA_PROJECT.Models.SignIn
 
 @{
-    ViewData["Title"] = "SignIn";
+    ViewData["Title"] = "Sign In";
 }
 
-<h1>SignIn</h1>
 @if (ViewBag.msg != null)
 {
-    <script>
-        alert("@ViewBag.msg");
-    </script>
+    <script>alert("@ViewBag.msg");</script>
 }
 
 @if (TempData["Mobile"] != null)
 {
-    <script>
-        alert("@TempData["Mobile"]");
-    </script>
+    <script>alert("@TempData["Mobile"]");</script>
 }
 
 @if (TempData["invalidtoken"] != null)
 {
-    <script>
-        alert("@TempData["invalidtoken"]");
-    </script>
+    <script>alert("@TempData["invalidtoken"]");</script>
 }
-
 
 @if (TempData["UserAlready"] != null)
 {
-    <script>
-        alert("@TempData["UserAlready"]");
-    </script>
+    <script>alert("@TempData["UserAlready"]");</script>
 }
 
+<div class=" min-h-full flex items-center justify-center bg-gray-100 mt-12">
 
+    <div class="w-full max-w-sm bg-white p-8 rounded-2xl shadow-lg">
 
+        <h2 class="text-2xl font-semibold text-center text-gray-800 mb-6">
+            Sign In
+            <h3 class="text-lg font-medium text-center text-gray-500">Enter your credentials to access your account <br>
 
+            Fields marked ( <span class="text-red-500">*</span> ) are mandatory.</h3>
+        </h2>
 
+        <form asp-action="SignIn" asp-controller="Account" method="post" class="space-y-5">
 
-<form asp-action="SignIn" asp-controller="Account" method="post">
+            <!-- Mobile No -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Mobile No <span class="text-red-500">*</span>
+                </label>
 
+                <input asp-for="MobileNo"
+                       placeholder="Mobile Number"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-md
+                              focus:outline-none focus:ring-2 focus:ring-blue-500" />
 
-    <div class="container">
-
-        <div class="row">
-            <div class="col-sm-4">
-                <input asp-for="MobileNo" class="form-control" placeholder="MobileNo" />
-                <span asp-validation-for="MobileNo" class="text-danger"></span>
+                <span asp-validation-for="MobileNo" class="text-sm text-red-500"></span>
             </div>
-        </div>
 
-        <br /><br />
+            <!-- Submit Button -->
+            <button type="submit"
+                    class="w-full bg-[#3B5AA9] text-white py-3 rounded-full text-sm font-medium
+                       hover:bg-[#2f4c94] transition">
+                Sign In
+            </button>
 
-
-
-
-        <div class="row">
-            <div class="col-sm-4">
-                <input type="submit" value="submit" class="btn btn-outline-primary w-100" />
-
-            </div>
-        </div>
-
-
+        </form>
     </div>
-</form>
-
-
+</div>

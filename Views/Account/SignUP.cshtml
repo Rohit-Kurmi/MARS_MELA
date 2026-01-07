@@ -2,63 +2,73 @@
 @Html.AntiForgeryToken()
 
 @{
-    ViewData["Title"] = "SignUP";
+    ViewData["Title"] = "Sign Up";
 }
 
+<div class="min-h-screen flex items-center justify-center bg-gray-50 ">
+    <form asp-action="SignUP" asp-controller="Account" method="post"
+          class="w-full max-w-md bg-white rounded-xl shadow-md p-8 space-y-5">
 
 
+        <h2 class="text-2xl font-semibold text-center text-gray-800">
+            Create Account
+            <h3 class="text-lg font-medium text-center text-gray-600">Fields marked ( <span class="text-red-500">*</span> ) are mandatory.</h3>
+        </h2>
 
-<form asp-action="SignUP" asp-controller="Account" method="post">
-    <div class="container">
-        @* <div class="row">
-            <div class="col-sm-4">
-                <input type="radio" value="Citizen" asp-for="CreatedBy" id="CreatedBy1" />
-                <label for="CreatedBy1">Citizen</label>
-                <input type="radio" value="Company" asp-for="CreatedBy" id="CreatedBy2" />
-                <label for="CreatedBy2">Company</label>
-                <br />
-                <span asp-validation-for="CreatedBy" class="text-danger"></span>
-            </div>
-        </div> *@
-
-
-        <br /><br />
-        <div class="row">
-            <div class="col-sm-4">
-                <input asp-for="FirstName" class="form-control" placeholder="First Name" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
+        <!-- First Name -->
+        <div>
+            First Name <span class="text-red-500">*</span>
+            <input asp-for="FirstName"
+                   placeholder="First Name"
+                   class=" w-full rounded-md border border-gray-300 px-4 py-3 text-sm
+                          focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <span asp-validation-for="FirstName" class="text-sm text-red-500"></span>
         </div>
 
-        <br /><br />
-        <div class="row">
-            <div class="col-sm-4">
-                <input asp-for="LastName" class="form-control " placeholder="Last Name" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
+        <!-- Last Name -->
+        <div>
+              Last Name <span class="text-red-500">*</span>
+            <input asp-for="LastName"
+                   placeholder="Last Name"
+                   class="w-full rounded-md border border-gray-300 px-4 py-3 text-sm
+                          focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <span asp-validation-for="LastName" class="text-sm text-red-500"></span>
         </div>
 
-        <br /><br />
-        <div class="row">
-            <div class="col-sm-4">
-                <input asp-for="MobileNo" class="form-control" placeholder="Mobile No." />
-                <span asp-validation-for="MobileNo" class="text-danger"></span>
-            </div>
-        </div>
-        <br /><br />
-        <div class="row">
-            <div class="col-sm-4">
-                <input asp-for="EmailID" class="form-control" placeholder="Email ID" />
-                <span asp-validation-for="EmailID" class="text-danger"></span>
-            </div>
-        </div>
-        <br />
-
-        <div class="row">
-            <div class="col-sm-4">
-                <input type="submit" class="btn btn-outline-primary  w-100" value="SignUp" />
-            </div>
+        <!-- Mobile -->
+        <div>
+              Mobile No <span class="text-red-500">*</span>
+            <input asp-for="MobileNo"
+                   placeholder="Mobile Number"
+                   class="w-full rounded-md border border-gray-300 px-4 py-3 text-sm
+                          focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <span asp-validation-for="MobileNo" class="text-sm text-red-500"></span>
         </div>
 
-    </div>
-</form>
+        <!-- Email -->
+        <div>
+              Email  <span class="text-red-500">*</span>
+            <input asp-for="EmailID"
+                   placeholder="Email Address"
+                   class="w-full rounded-md border border-gray-300 px-4 py-3 text-sm
+                          focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <span asp-validation-for="EmailID" class="text-sm text-red-500"></span>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit"
+                class="w-full bg-[#3B5AA9] text-white py-3 rounded-full text-sm font-medium
+                       hover:bg-[#2f4c94] transition">
+            Sign Up
+        </button>
+
+        <!-- Footer -->
+        <p class="text-center text-sm text-gray-500">
+            Already have an account?
+            <a asp-controller="Account" asp-action="SignIn"
+               class="text-blue-600 hover:underline font-medium">
+                Sign In
+            </a>
+        </p>
+    </form>
+</div>

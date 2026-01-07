@@ -1,137 +1,166 @@
 ﻿@model MARS_MELA_PROJECT.Models.CreateTradeFair
 @{
     ViewData["Title"] = "Create Trade Fair";
-    Layout = "_Layout2";
+    Layout = "_LayoutDashboard";
 }
 
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-xl-10 col-lg-11 col-md-12">
+<div class="max-w-6xl mx-auto px-6 py-2">
+   
+    <!-- Page Title -->
+    <h1 class="text-3xl font-bold mb-1 ">Create New Trade Fair</h1>
+    <p class="text-gray-500 mb-6">
+        Fill in the details below to create a new trade fair or carnival.
+    </p>
 
-            <div class="card shadow-lg border-0 rounded-4">
+    <!-- Card -->
+    <div class="bg-white rounded-xl shadow border-gray-100">
 
-                <div class="card-header bg-primary text-white rounded-top-4">
-                    <h4 class="mb-0 text-center">Create Trade Fair</h4>
-                </div>
+        <form asp-action="CreateTradeFair"
+              asp-controller="SuperAdmin"
+              method="post"
+              enctype="multipart/form-data"
+              class="p-6 space-y-10"
+              novalidate>
 
-                <div class="card-body px-4 py-4">
+            <!-- ================= BASIC INFORMATION ================= -->
+            <div>
+                <h2 class="font-semibold text-lg mb-4">Basic Information</h2>
 
-                    <form asp-action="CreateTradeFair" asp-controller="SuperAdmin" method="post" enctype="multipart/form-data" novalidate>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label asp-for="FairName" class="block text-sm font-medium mb-1 "></label>
+                        <input asp-for="FairName"
+                                placeholder="e.g, Annual Crafts Mela"
+                               class="w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500 py-3 px-1  bg-gray-100" />
+                        <span asp-validation-for="FairName" class="text-red-500 text-sm"></span>
+                    </div>
 
-                        <!-- ================== SECTION 1: Address ================== -->
-                        <h5 class="mb-3 text-primary">Address Details</h5>
-                        <div class="row g-3 mb-4">
-
-                            <div class="col-md-6">
-                                <label asp-for="FairName" class="form-label fw-semibold"></label>
-                                <input asp-for="FairName" class="form-control" />
-                                <span asp-validation-for="FairName" class="text-danger small"></span>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label asp-for="Division" class="form-label fw-semibold"></label>
-                                <input asp-for="Division" class="form-control" />
-                                <span asp-validation-for="Division" class="text-danger small"></span>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label asp-for="District" class="form-label fw-semibold"></label>
-                                <input asp-for="District" class="form-control" />
-                                <span asp-validation-for="District" class="text-danger small"></span>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label asp-for="Tehsil" class="form-label fw-semibold"></label>
-                                <input asp-for="Tehsil" class="form-control" />
-                                <span asp-validation-for="Tehsil" class="text-danger small"></span>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label asp-for="City" class="form-label fw-semibold"></label>
-                                <input asp-for="City" class="form-control" />
-                                <span asp-validation-for="City" class="text-danger small"></span>
-                            </div>
-                        </div>
-
-                        <hr />
-
-                        <!-- ================== SECTION 2: Dates ================== -->
-                        <h5 class="mb-3 text-primary">Trade Fair Dates</h5>
-                        <div class="row g-3 mb-4">
-
-                            <div class="col-md-3">
-                                <label asp-for="StartDate" class="form-label fw-semibold"></label>
-                                <input asp-for="StartDate" type="date" class="form-control" />
-                                <span asp-validation-for="StartDate" class="text-danger small"></span>
-                            </div>
-
-                            <div class="col-md-3">
-                                <label asp-for="EndDate" class="form-label fw-semibold"></label>
-                                <input asp-for="EndDate" type="date" class="form-control" />
-                                <span asp-validation-for="EndDate" class="text-danger small"></span>
-                            </div>
-
-                            <div class="col-md-3">
-                                <label asp-for="ApplyStartDate" class="form-label fw-semibold"></label>
-                                <input asp-for="ApplyStartDate" type="date" class="form-control" />
-                                <span asp-validation-for="ApplyStartDate" class="text-danger small"></span>
-                            </div>
-
-                            <div class="col-md-3">
-                                <label asp-for="ApplyEndDate" class="form-label fw-semibold"></label>
-                                <input asp-for="ApplyEndDate" type="date" class="form-control" />
-                                <span asp-validation-for="ApplyEndDate" class="text-danger small"></span>
-                            </div>
-                        </div>
-
-                        <hr />
-
-                        <!-- ================== SECTION 3: Contacts & Logo ================== -->
-                        <h5 class="mb-3 text-primary">Contacts & Logo</h5>
-                        <div class="row g-3 mb-4">
-
-                            <div class="col-md-6">
-                                <label asp-for="FairLogo" class="form-label fw-semibold">Fair Logo</label>
-                                <input asp-for="FairLogo" type="file" class="form-control" accept=".jpg,.jpeg,.png" />
-                                <span asp-validation-for="FairLogo" class="text-danger small"></span>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label asp-for="ContactMobile1" class="form-label fw-semibold"></label>
-                                <input asp-for="ContactMobile1" class="form-control" />
-                                <span asp-validation-for="ContactMobile1" class="text-danger small"></span>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label asp-for="ContactMobile2" class="form-label fw-semibold"></label>
-                                <input asp-for="ContactMobile2" class="form-control" />
-                                <span asp-validation-for="ContactMobile2" class="text-danger small"></span>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label asp-for="ContactEmail" class="form-label fw-semibold"></label>
-                                <input asp-for="ContactEmail" class="form-control" />
-                                <span asp-validation-for="ContactEmail" class="text-danger small"></span>
-                            </div>
-                        </div>
-
-                        <hr class="my-4" />
-
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-primary px-5 py-2">
-                                Save Trade Fair
-                            </button>
-                        </div>
-
-                    </form>
-
+                    <!-- Logo Upload -->
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Logo</label>
+                        <label class="flex flex-col items-center justify-center
+                                      border-2 border-dashed rounded-lg h-32 bg-gray-100
+                                      cursor-pointer hover:border-blue-500">
+                            <input asp-for="FairLogo" type="file" class="hidden" />
+                            <span class="text-sm text-gray-500">
+                                Click to upload or drag & drop
+                            </span>
+                            <span class="text-xs text-gray-400">
+                                PNG, JPG (max 800×400)
+                            </span>
+                        </label>
+                        <span asp-validation-for="FairLogo" class="text-red-500 text-sm"></span>
+                    </div>
                 </div>
             </div>
 
-        </div>
+            <!-- ================= ADDRESS ================= -->
+            <div>
+                <h2 class="font-semibold text-lg mb-4">Address</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label asp-for="Division" class="block text-sm font-medium mb-1"></label>
+                        <input asp-for="Division" class="input bg-gray-100" />
+                    </div>
+
+                    <div>
+                        <label asp-for="District" class="block text-sm font-medium mb-1"></label>
+                        <input asp-for="District" class="input bg-gray-100" />
+                    </div>
+
+                    <div>
+                        <label asp-for="Tehsil" class="block text-sm font-medium mb-1"></label>
+                        <input asp-for="Tehsil" class="input bg-gray-100" />
+                    </div>
+
+                    <div>
+                        <label asp-for="City" class="block text-sm font-medium mb-1"></label>
+                        <input asp-for="City" class="input bg-gray-100" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= DATES ================= -->
+            <div>
+                <h2 class="font-semibold text-lg mb-4">Dates</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div>
+                        <label asp-for="StartDate" class="block text-sm font-medium mb-1"></label>
+                        <input asp-for="StartDate" type="date" class="input bg-gray-100" />
+                    </div>
+
+                    <div>
+                        <label asp-for="EndDate" class="block text-sm font-medium mb-1"></label>
+                        <input asp-for="EndDate" type="date" class="input bg-gray-100" />
+                    </div>
+
+                    <div>
+                        <label asp-for="ApplyStartDate" class="block text-sm font-medium mb-1"></label>
+                        <input asp-for="ApplyStartDate" type="date" class="input bg-gray-100" />
+                    </div>
+
+                    <div>
+                        <label asp-for="ApplyEndDate" class="block text-sm font-medium mb-1"></label>
+                        <input asp-for="ApplyEndDate" type="date" class="input bg-gray-100" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= CONTACT ================= -->
+            <div>
+                <h2 class="font-semibold text-lg mb-4">Contact Information</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label asp-for="ContactMobile1" class="block text-sm font-medium mb-1"></label>
+                        <input asp-for="ContactMobile1" class="input bg-gray-100" />
+                    </div>
+
+                    <div>
+                        <label asp-for="ContactEmail" class="block text-sm font-medium mb-1"></label>
+                        <input asp-for="ContactEmail" class="input bg-gray-100" />
+                    </div>
+
+                    <div>
+                        <label asp-for="ContactMobile2" class="block text-sm font-medium mb-1"></label>
+                        <input asp-for="ContactMobile2" class="input bg-gray-100" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= ACTIONS ================= -->
+            <div class="flex justify-end gap-3 pt-6 border-t-gray-100">
+                <a href="/SuperAdmin/CreateTradeFair"
+                   class="px-5 py-2 rounded-lg border text-gray-600 hover:bg-gray-100 no-underline">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">
+                    Create Fair
+                </button>
+            </div>
+
+        </form>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+<style>
+    .input {
+        width: 100%;
+        border-radius: 0.5rem;
+        border: 1px solid #d1d5db;
+        padding: 0.5rem 0.75rem;
+        outline: none;
+    }
+
+    .input:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 1px #2563eb;
+    }
+</style>

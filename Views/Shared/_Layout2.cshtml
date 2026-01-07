@@ -1,71 +1,61 @@
 ﻿<!DOCTYPE html>
-
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/MARS_MELA_PROJECT.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body class="bg-gray-100 text-gray-800">
 
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="SuperAdmin" asp-action="Dashboard">MARS MELA</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+    <!-- HEADER / NAVBAR -->
+    <header class="bg-white shadow-sm">
+        <nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-                    <!-- LEFT SIDE ITEMS -->
-                    <ul class="navbar-nav">
-                        @*<li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="MyProfile">MyProfile</a>
-                        </li> *@
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="SuperAdmin" asp-action="SuperAdminDashboard">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="SuperAdmin" asp-action="CreateTradeFair">Create TradeFair</a>
-                        </li>
-                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="SuperAdmin" asp-action="MelaAdmin">Create Mela Admin</a>
-                        </li> 
-                    </ul>
+            <a asp-controller="SuperAdmin" asp-action="Dashboard"
+               class="text-xl font-semibold text-blue-700">
+                MARS MELA
+            </a>
 
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <form asp-controller="SuperAdmin" asp-action="Logout" method="post">
-                                <button type="submit" class="btn btn-outline-primary">
-                                    Logout
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
+            <div class="flex items-center space-x-6">
 
+                <a asp-controller="SuperAdmin" asp-action="SuperAdminDashboard"
+                   class="text-gray-700 hover:text-blue-600 font-medium">
+                    Home
+                </a>
 
+                <a asp-controller="SuperAdmin" asp-action="CreateTradeFair"
+                   class="text-gray-700 hover:text-blue-600 font-medium">
+                    Create Trade Fair
+                </a>
 
-                </div>
+                <a asp-controller="SuperAdmin" asp-action="MelaAdmin"
+                   class="text-gray-700 hover:text-blue-600 font-medium">
+                    Create Mela Admin
+                </a>
+
+                <form asp-controller="SuperAdmin" asp-action="Logout" method="post">
+                    <button type="submit"
+                            class="px-4 py-2 border border-blue-600 text-blue-600
+                                   rounded-full hover:bg-blue-600 hover:text-white transition">
+                        Logout
+                    </button>
+                </form>
+
             </div>
         </nav>
     </header>
-    <main role="main" class="pb-3">
+
+    <!-- PAGE CONTENT -->
+    <main class="max-w-7xl mx-auto px-6 py-8">
         @RenderBody()
     </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - MARS_MELA_PROJECT - <a asp-area="" asp-controller="SuperAdmin" asp-action="SuperAdminDashboard">Privacy</a>
-        </div>
+    <!-- FOOTER -->
+    <footer class="bg-white border-t py-4 text-center text-sm text-gray-500">
+        © 2025 - MARS_MELA_PROJECT
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
 
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
