@@ -1,101 +1,99 @@
 ﻿@model MARS_MELA_PROJECT.Models.UserViewModel
 
-
 @{
     ViewData["Title"] = "MelaAdmin";
+    Layout = "_Layout2";
 }
 
-<h1>MelaAdmin</h1>
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-10">
 
-<!-- 🔴 Validation Summary for general errors -->
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger">
-        @Html.ValidationSummary(false)
+            <!-- Card Container -->
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header text-white text-center" style="background: linear-gradient(90deg, #007bff, #00c6ff);">
+                    <h3 class="mb-0 fw-bold">Mela Admin Registration</h3>
+                </div>
+
+                <div class="card-body p-5">
+
+                    <!-- Validation Summary -->
+                   @*  @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            @Html.ValidationSummary(false)
+                        </div>
+                    } *@
+
+                    <form asp-action="MelaAdmin" asp-controller="SuperAdmin" method="post" novalidate>
+
+                        <!-- First Name -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="MelaAdmin.FirstName" class="form-control" placeholder="First Name" />
+                            <label asp-for="MelaAdmin.FirstName"><i class="bi bi-person-fill me-2"></i>First Name</label>
+                            <span asp-validation-for="MelaAdmin.FirstName" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="MelaAdmin.LastName" class="form-control" placeholder="Last Name" />
+                            <label asp-for="MelaAdmin.LastName"><i class="bi bi-person-fill me-2"></i>Last Name</label>
+                            <span asp-validation-for="MelaAdmin.LastName" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Mobile Number -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="MelaAdmin.MobileNo" class="form-control" placeholder="Mobile Number" />
+                            <label asp-for="MelaAdmin.MobileNo"><i class="bi bi-telephone-fill me-2"></i>Mobile Number</label>
+                            <span asp-validation-for="MelaAdmin.MobileNo" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="MelaAdmin.EmailID" class="form-control" placeholder="Email" />
+                            <label asp-for="MelaAdmin.EmailID"><i class="bi bi-envelope-fill me-2"></i>Email ID</label>
+                            <span asp-validation-for="MelaAdmin.EmailID" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Role Dropdown -->
+                        <div class="mb-3">
+                            <label asp-for="RoleID" class="form-label"><i class="bi bi-people-fill me-2"></i>Select Role</label>
+                            @if (Model.Rolesdropdowns != null)
+                            {
+                                <select asp-for="RoleID"
+                                        asp-items="@(new SelectList(Model.Rolesdropdowns, "RoleID", "RoleName"))"
+                                        class="form-select">
+                                    <option value="">-- Select Role --</option>
+                                </select>
+                            }
+                            <span asp-validation-for="RoleID" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="MelaAdmin.PasswordHash" type="password" class="form-control" placeholder="Password" />
+                            <label asp-for="MelaAdmin.PasswordHash"><i class="bi bi-lock-fill me-2"></i>Password</label>
+                            <span asp-validation-for="MelaAdmin.PasswordHash" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="form-floating mb-4">
+                            <input asp-for="MelaAdmin.ConfirmPassword" type="password" class="form-control" placeholder="Confirm Password" />
+                            <label asp-for="MelaAdmin.ConfirmPassword"><i class="bi bi-lock-fill me-2"></i>Confirm Password</label>
+                            <span asp-validation-for="MelaAdmin.ConfirmPassword" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold">Sign Up</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-}
+</div>
 
-
-
-
-<form asp-action="MelaAdmin" asp-controller="SuperAdmin" method="post">
-    <div class="container">
-      
-
-
-        <br /><br />
-        <div class="row">
-            <div class="col-sm-4">
-                <input asp-for="MelaAdmin.FirstName" class="form-control" placeholder="First Name" />
-                <span asp-validation-for="MelaAdmin.FirstName" class="text-danger"></span>
-            </div>
-        </div>
-
-        <br /><br />
-        <div class="row">
-            <div class="col-sm-4">
-                <input asp-for="MelaAdmin.LastName" class="form-control " placeholder="Last Name" />
-                <span asp-validation-for="MelaAdmin.LastName" class="text-danger"></span>
-            </div>
-        </div>
-
-        <br /><br />
-        <div class="row">
-            <div class="col-sm-4">
-                <input asp-for="MelaAdmin.MobileNo" class="form-control" placeholder="Mobile No." />
-                <span asp-validation-for="MelaAdmin.MobileNo" class="text-danger"></span>
-            </div>
-        </div>
-        <br /><br />
-        <div class="row">
-            <div class="col-sm-4">
-                <input asp-for="MelaAdmin.EmailID" class="form-control" placeholder="Email ID" />
-                <span asp-validation-for="MelaAdmin.EmailID" class="text-danger"></span>
-            </div>
-        </div>
-        <br />
-
-        <div class="row">
-            <div class="col-sm-4">
-                @if (Model.Rolesdropdowns != null)
-                {
-                    <select asp-for="RoleID"
-                            asp-items="@(new SelectList(Model.Rolesdropdowns, "RoleID", "RoleName"))"
-                            class="form-control">
-                        <option value="">-- Select Role --</option>
-
-                    </select>
-                }
-                <span asp-validation-for="RoleID" class="text-danger"></span>
-
-
-
-            </div>
-        </div>
-        <br />
-
-        <div class="row">
-            <div class="col-sm-4">
-                <input asp-for="MelaAdmin.PasswordHash" class="form-control" placeholder="New Password" />
-                <span asp-validation-for="MelaAdmin.PasswordHash" class="text-danger"></span>
-            </div>
-        </div>
-        <br />
-        <div class="row">
-            <div class="col-sm-4">
-                <input asp-for="MelaAdmin.ConfirmPassword" class="form-control" placeholder="confirm Password" />
-                <span asp-validation-for="MelaAdmin.ConfirmPassword" class="text-danger"></span>
-            </div>
-        </div>
-        <br />
-
-
-
-        <div class="row">
-            <div class="col-sm-4">
-                <input type="submit" class="btn btn-outline-primary  w-100" value="SignUp" />
-            </div>
-        </div>
-
-    </div>
-</form>
+<!-- Bootstrap Icons CDN (if not already included in _Layout2) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">

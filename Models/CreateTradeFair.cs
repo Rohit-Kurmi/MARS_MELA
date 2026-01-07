@@ -1,4 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
+using static System.Collections.Specialized.BitVector32;
 
 namespace MARS_MELA_PROJECT.Models
 {
@@ -76,3 +81,6 @@ namespace MARS_MELA_PROJECT.Models
 
     }
 }
+
+
+

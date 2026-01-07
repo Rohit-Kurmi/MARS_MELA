@@ -10,121 +10,134 @@
 
             <div class="card shadow-lg border-0 rounded-4">
 
-                <div class="card-header bg-primary text-white rounded-top-4">
-                    <h4 class="mb-0 text-center">Create Trade Fair</h4>
+                <!-- HEADER -->
+                <div class="card-header text-white text-center rounded-top-4"
+                     style="background: linear-gradient(90deg,#0d6efd,#0b5ed7);">
+                    <h4 class="mb-0 fw-bold">
+                        <i class="bi bi-building"></i> Create Trade Fair
+                    </h4>
                 </div>
 
-                <div class="card-body px-4 py-4">
+                <div class="card-body p-4">
 
-                    <form asp-action="CreateTradeFair" asp-controller="SuperAdmin" method="post" enctype="multipart/form-data" novalidate>
+                    <form asp-action="CreateTradeFair" asp-controller="SuperAdmin"
+                          method="post" enctype="multipart/form-data" novalidate>
 
-                        <!-- ================== SECTION 1: Address ================== -->
-                        <h5 class="mb-3 text-primary">Address Details</h5>
-                        <div class="row g-3 mb-4">
+                        <!-- ================= Address Section ================= -->
+                        <div class="bg-light p-4 rounded-3 mb-4 border">
+                            <h5 class="text-primary fw-semibold mb-3">
+                                <i class="bi bi-geo-alt-fill"></i> Address Details
+                            </h5>
 
-                            <div class="col-md-6">
-                                <label asp-for="FairName" class="form-label fw-semibold"></label>
-                                <input asp-for="FairName" class="form-control" />
-                                <span asp-validation-for="FairName" class="text-danger small"></span>
-                            </div>
+                            <div class="row g-3">
 
-                            <div class="col-md-6">
-                                <label asp-for="Division" class="form-label fw-semibold"></label>
-                                <input asp-for="Division" class="form-control" />
-                                <span asp-validation-for="Division" class="text-danger small"></span>
-                            </div>
+                                <div class="col-md-6 form-floating">
+                                    <input asp-for="FairName" class="form-control" placeholder="Fair Name" />
+                                    <label asp-for="FairName"></label>
+                                    <span asp-validation-for="FairName" class="text-danger small"></span>
+                                </div>
 
-                            <div class="col-md-6">
-                                <label asp-for="District" class="form-label fw-semibold"></label>
-                                <input asp-for="District" class="form-control" />
-                                <span asp-validation-for="District" class="text-danger small"></span>
-                            </div>
+                                <div class="col-md-6">
+                                    <label asp-for="Division" class="form-label fw-semibold"></label>
+                                    <select asp-for="Division" class="form-select" id="Division">
+                                        <option value="">-- Select Division --</option>
+                                    </select>
+                                    <span asp-validation-for="Division" class="text-danger small"></span>
+                                </div>
 
-                            <div class="col-md-6">
-                                <label asp-for="Tehsil" class="form-label fw-semibold"></label>
-                                <input asp-for="Tehsil" class="form-control" />
-                                <span asp-validation-for="Tehsil" class="text-danger small"></span>
-                            </div>
+                                <div class="col-md-6">
+                                    <label asp-for="District" class="form-label fw-semibold"></label>
+                                    <select asp-for="District" class="form-select" id="District" disabled>
+                                        <option value="">-- Select District --</option>
+                                    </select>
+                                    <span asp-validation-for="District" class="text-danger small"></span>
+                                </div>
 
-                            <div class="col-md-6">
-                                <label asp-for="City" class="form-label fw-semibold"></label>
-                                <input asp-for="City" class="form-control" />
-                                <span asp-validation-for="City" class="text-danger small"></span>
-                            </div>
-                        </div>
+                                <div class="col-md-6">
+                                    <label asp-for="Tehsil" class="form-label fw-semibold"></label>
+                                    <select asp-for="Tehsil" class="form-select" id="Tehsil" disabled>
+                                        <option value="">-- Select Tehsil --</option>
+                                    </select>
+                                    <span asp-validation-for="Tehsil" class="text-danger small"></span>
+                                </div>
 
-                        <hr />
+                                <div class="col-md-6">
+                                    <label asp-for="City" class="form-label fw-semibold"></label>
+                                    <select asp-for="City" class="form-select" id="City" disabled>
+                                        <option value="">-- Select City --</option>
+                                    </select>
+                                    <span asp-validation-for="City" class="text-danger small"></span>
+                                </div>
 
-                        <!-- ================== SECTION 2: Dates ================== -->
-                        <h5 class="mb-3 text-primary">Trade Fair Dates</h5>
-                        <div class="row g-3 mb-4">
-
-                            <div class="col-md-3">
-                                <label asp-for="StartDate" class="form-label fw-semibold"></label>
-                                <input asp-for="StartDate" type="date" class="form-control" />
-                                <span asp-validation-for="StartDate" class="text-danger small"></span>
-                            </div>
-
-                            <div class="col-md-3">
-                                <label asp-for="EndDate" class="form-label fw-semibold"></label>
-                                <input asp-for="EndDate" type="date" class="form-control" />
-                                <span asp-validation-for="EndDate" class="text-danger small"></span>
-                            </div>
-
-                            <div class="col-md-3">
-                                <label asp-for="ApplyStartDate" class="form-label fw-semibold"></label>
-                                <input asp-for="ApplyStartDate" type="date" class="form-control" />
-                                <span asp-validation-for="ApplyStartDate" class="text-danger small"></span>
-                            </div>
-
-                            <div class="col-md-3">
-                                <label asp-for="ApplyEndDate" class="form-label fw-semibold"></label>
-                                <input asp-for="ApplyEndDate" type="date" class="form-control" />
-                                <span asp-validation-for="ApplyEndDate" class="text-danger small"></span>
                             </div>
                         </div>
 
-                        <hr />
+                        <!-- ================= Dates Section ================= -->
+                        <div class="bg-light p-4 rounded-3 mb-4 border">
+                            <h5 class="text-primary fw-semibold mb-3">
+                                <i class="bi bi-calendar-event"></i> Trade Fair Dates
+                            </h5>
 
-                        <!-- ================== SECTION 3: Contacts & Logo ================== -->
-                        <h5 class="mb-3 text-primary">Contacts & Logo</h5>
-                        <div class="row g-3 mb-4">
+                            <div class="row g-3">
+                                <div class="col-md-3 form-floating">
+                                    <input asp-for="StartDate" type="date" class="form-control" />
+                                    <label asp-for="StartDate"></label>
+                                </div>
 
-                            <div class="col-md-6">
-                                <label asp-for="FairLogo" class="form-label fw-semibold">Fair Logo</label>
-                                <input asp-for="FairLogo" type="file" class="form-control" accept=".jpg,.jpeg,.png" />
-                                <span asp-validation-for="FairLogo" class="text-danger small"></span>
-                            </div>
+                                <div class="col-md-3 form-floating">
+                                    <input asp-for="EndDate" type="date" class="form-control" />
+                                    <label asp-for="EndDate"></label>
+                                </div>
 
-                            <div class="col-md-6">
-                                <label asp-for="ContactMobile1" class="form-label fw-semibold"></label>
-                                <input asp-for="ContactMobile1" class="form-control" />
-                                <span asp-validation-for="ContactMobile1" class="text-danger small"></span>
-                            </div>
+                                <div class="col-md-3 form-floating">
+                                    <input asp-for="ApplyStartDate" type="date" class="form-control" />
+                                    <label asp-for="ApplyStartDate"></label>
+                                </div>
 
-                            <div class="col-md-6">
-                                <label asp-for="ContactMobile2" class="form-label fw-semibold"></label>
-                                <input asp-for="ContactMobile2" class="form-control" />
-                                <span asp-validation-for="ContactMobile2" class="text-danger small"></span>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label asp-for="ContactEmail" class="form-label fw-semibold"></label>
-                                <input asp-for="ContactEmail" class="form-control" />
-                                <span asp-validation-for="ContactEmail" class="text-danger small"></span>
+                                <div class="col-md-3 form-floating">
+                                    <input asp-for="ApplyEndDate" type="date" class="form-control" />
+                                    <label asp-for="ApplyEndDate"></label>
+                                </div>
                             </div>
                         </div>
 
-                        <hr class="my-4" />
+                        <!-- ================= Contact Section ================= -->
+                        <div class="bg-light p-4 rounded-3 mb-4 border">
+                            <h5 class="text-primary fw-semibold mb-3">
+                                <i class="bi bi-telephone-fill"></i> Contact & Logo
+                            </h5>
 
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label asp-for="FairLogo" class="form-label fw-semibold"></label>
+                                    <input asp-for="FairLogo" type="file" class="form-control" />
+                                </div>
+
+                                <div class="col-md-6 form-floating">
+                                    <input asp-for="ContactMobile1" class="form-control" placeholder="Mobile 1" />
+                                    <label asp-for="ContactMobile1"></label>
+                                </div>
+
+                                <div class="col-md-6 form-floating">
+                                    <input asp-for="ContactMobile2" class="form-control" placeholder="Mobile 2" />
+                                    <label asp-for="ContactMobile2"></label>
+                                </div>
+
+                                <div class="col-md-6 form-floating">
+                                    <input asp-for="ContactEmail" class="form-control" placeholder="Email" />
+                                    <label asp-for="ContactEmail"></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ================= Submit ================= -->
                         <div class="text-center">
-                            <button type="submit" class="btn btn-primary px-5 py-2">
-                                Save Trade Fair
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="bi bi-save"></i> Save Trade Fair
                             </button>
                         </div>
 
                     </form>
-
                 </div>
             </div>
 
@@ -132,6 +145,110 @@
     </div>
 </div>
 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        let divisionsData = [];
+
+        // Load JSON file
+        fetch('/Mpdata.json')
+            .then(res => res.json())
+            .then(data => {
+                divisionsData = data.divisions;
+                const divisionSelect = document.getElementById('Division');
+                divisionsData.forEach(div => {
+                    let option = document.createElement('option');
+                    option.value = div.name;
+                    option.text = div.name;
+                    divisionSelect.appendChild(option);
+                });
+            });
+
+        // Division change
+        document.getElementById('Division').addEventListener('change', function () {
+            const divisionName = this.value;
+            const districtSelect = document.getElementById('District');
+            const tehsilSelect = document.getElementById('Tehsil');
+            const citySelect = document.getElementById('City');
+
+            districtSelect.innerHTML = '<option value="">-- Select District --</option>';
+            tehsilSelect.innerHTML = '<option value="">-- Select Tehsil --</option>';
+            citySelect.innerHTML = '<option value="">-- Select City --</option>';
+
+            tehsilSelect.disabled = true;
+            citySelect.disabled = true;
+
+            if (!divisionName) {
+                districtSelect.disabled = true;
+                return;
+            }
+
+            districtSelect.disabled = false;
+            const division = divisionsData.find(d => d.name === divisionName);
+            division.districts.forEach(dist => {
+                let option = document.createElement('option');
+                option.value = dist.name;
+                option.text = dist.name;
+                districtSelect.appendChild(option);
+            });
+        });
+
+        // District change
+        document.getElementById('District').addEventListener('change', function () {
+            const divisionName = document.getElementById('Division').value;
+            const districtName = this.value;
+            const tehsilSelect = document.getElementById('Tehsil');
+            const citySelect = document.getElementById('City');
+
+            tehsilSelect.innerHTML = '<option value="">-- Select Tehsil --</option>';
+            citySelect.innerHTML = '<option value="">-- Select City --</option>';
+            citySelect.disabled = true;
+
+            if (!districtName) {
+                tehsilSelect.disabled = true;
+                return;
+            }
+
+            tehsilSelect.disabled = false;
+            const division = divisionsData.find(d => d.name === divisionName);
+            const district = division.districts.find(d => d.name === districtName);
+            district.tehsils.forEach(teh => {
+                let option = document.createElement('option');
+                option.value = teh.name;
+                option.text = teh.name;
+                tehsilSelect.appendChild(option);
+            });
+        });
+
+        // Tehsil change
+        document.getElementById('Tehsil').addEventListener('change', function () {
+            const divisionName = document.getElementById('Division').value;
+            const districtName = document.getElementById('District').value;
+            const tehsilName = this.value;
+            const citySelect = document.getElementById('City');
+
+            citySelect.innerHTML = '<option value="">-- Select City --</option>';
+
+            if (!tehsilName) {
+                citySelect.disabled = true;
+                return;
+            }
+
+            citySelect.disabled = false;
+            const division = divisionsData.find(d => d.name === divisionName);
+            const district = division.districts.find(d => d.name === districtName);
+            const tehsil = district.tehsils.find(t => t.name === tehsilName);
+            tehsil.cities.forEach(city => {
+                let option = document.createElement('option');
+                option.value = city;
+                option.text = city;
+                citySelect.appendChild(option);
+            });
+        });
+
+    </script>
 }

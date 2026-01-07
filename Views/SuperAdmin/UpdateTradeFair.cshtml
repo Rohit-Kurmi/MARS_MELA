@@ -1,0 +1,204 @@
+﻿@model MARS_MELA_PROJECT.Models.TradeFairUpdateVM
+
+@{
+    ViewData["Title"] = "Update Trade Fair";
+    Layout = "_Layout2";
+}
+
+<div class="container my-5">
+
+    <!-- ================= SEARCH FORM ================= -->
+    <form id="searchForm" class="card shadow-lg mb-4">
+        <div class="card-header bg-primary text-white text-center">
+            <h5 class="mb-0">Search Trade Fair</h5>
+        </div>
+
+        <div class="card-body row g-3 p-4">
+
+            <div class="col-md-6">
+                <label asp-for="Search.FairId"></label>
+                <input asp-for="Search.FairId" class="form-control" />
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Search.FairEmail"></label>
+                <input asp-for="Search.FairEmail" class="form-control" />
+            </div>
+
+            <div class="col-12 text-center mt-3">
+                <button type="button" class="btn btn-primary px-5" onclick="searchTradeFair()">
+                    Search
+                </button>
+            </div>
+        </div>
+    </form>
+
+
+    <!-- ================= UPDATE FORM ================= -->
+    <form id="updateForm"
+          asp-action="UpdateTradeFair"
+          asp-controller="SuperAdmin"
+          method="post"
+          enctype="multipart/form-data"
+          class="card shadow-lg"
+          style="display:none;">
+
+        <div class="card-header bg-success text-white text-center">
+            <h5 class="mb-0">Update Trade Fair</h5>
+        </div>
+
+        <div class="card-body p-4">
+
+            <input asp-for="Fair.FairId" type="hidden" id="Fair_Id" />
+            <input asp-for="Fair.ExistingLogoPath" type="hidden" id="ExistingLogoPath" />
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label asp-for="Fair.FairName"></label>
+                    <input asp-for="Fair.FairName" class="form-control" />
+                    <span asp-validation-for="Fair.FairName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Fair.Division"></label>
+                    <input asp-for="Fair.Division" class="form-control" />
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Fair.District"></label>
+                    <input asp-for="Fair.District" class="form-control" />
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Fair.Tehsil"></label>
+                    <input asp-for="Fair.Tehsil" class="form-control" />
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Fair.City"></label>
+                    <input asp-for="Fair.City" class="form-control" />
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Fair.ContactEmail"></label>
+                    <input asp-for="Fair.ContactEmail" class="form-control" />
+                </div>
+
+                <div class="col-md-6">
+                <label asp-for="Fair.ContactMobile1"></label>
+                <input asp-for="Fair.ContactMobile1" class="form-control" />
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Fair.ContactMobile2"></label>
+                <input asp-for="Fair.ContactMobile2" class="form-control" />
+            </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Fair.StartDate"></label>
+                    <input asp-for="Fair.StartDate" type="date" class="form-control" />
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Fair.EndDate"></label>
+                    <input asp-for="Fair.EndDate" type="date" class="form-control" />
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Fair.ApplyStartDate"></label>
+                    <input asp-for="Fair.ApplyStartDate" type="date" class="form-control" />
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Fair.ApplyEndDate"></label>
+                    <input asp-for="Fair.ApplyEndDate" type="date" class="form-control" />
+                </div>
+
+                <!-- STATUS -->
+                <div class="col-md-6 mt-3">
+                    <div class="form-check">
+                        <input asp-for="Fair.Status" class="form-check-input" type="checkbox" />
+                        <label class="form-check-label">Active</label>
+                    </div>
+                </div>
+
+                <!-- LOGO -->
+                <div class="col-md-6">
+                    <label>Fair Logo</label><br />
+                    <img id="logoPreview" src="" width="120" class="img-thumbnail mb-2" />
+                    <input asp-for="Fair.NewLogo" type="file" class="form-control"
+                           onchange="previewLogo(this)" />
+                </div>
+
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-success btn-lg px-5">
+                    Update Trade Fair
+                </button>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+@section Scripts {
+    <script>
+        function searchTradeFair() {
+
+            let id = document.getElementById("Search_FairId").value;
+            let email = document.getElementById("Search_FairEmail").value;
+
+            if (!id && !email) {
+                alert("Enter Fair ID or Email");
+                return;
+            }
+
+            fetch(`/SuperAdmin/GetTradeFair?id=${id}&email=${email}`)
+                .then(res => res.json())
+                .then(res => {
+
+                    if (!res.success) {
+                        alert(res.message);
+                        return;
+                    }
+
+                    document.getElementById("searchForm").style.display = "none";
+                    document.getElementById("updateForm").style.display = "block";
+
+                    let d = res.data;
+
+                    document.getElementById("Fair_Id").value = d.fairId;
+                    document.getElementById("Fair_FairName").value = d.fairName;
+                    document.getElementById("Fair_Division").value = d.division;
+                    document.getElementById("Fair_District").value = d.district;
+                    document.getElementById("Fair_Tehsil").value = d.tehsil;
+                    document.getElementById("Fair_City").value = d.city;
+                    document.getElementById("Fair_ContactEmail").value = d.contactEmail;
+                            document.getElementById("Fair_ContactMobile1").value = d.contactMobile1;
+        document.getElementById("Fair_ContactMobile2").value = d.contactMobile2;
+
+
+                    document.getElementById("Fair_StartDate").value = d.startDate?.substring(0,10);
+                    document.getElementById("Fair_EndDate").value = d.endDate?.substring(0,10);
+                    document.getElementById("Fair_ApplyStartDate").value = d.applyStartDate?.substring(0,10);
+                    document.getElementById("Fair_ApplyEndDate").value = d.applyEndDate?.substring(0,10);
+
+                    document.getElementById("Fair_Status").checked = d.status;
+
+                    if (d.existingLogoPath) {
+                        document.getElementById("logoPreview").src = d.existingLogoPath;
+                        document.getElementById("ExistingLogoPath").value = d.existingLogoPath;
+                    }
+                });
+        }
+
+        function previewLogo(input) {
+            if (input.files && input.files[0]) {
+                document.getElementById("logoPreview").src =
+                    URL.createObjectURL(input.files[0]);
+            }
+        }
+    </script>
+}

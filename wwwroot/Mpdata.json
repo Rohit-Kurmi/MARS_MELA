@@ -1,0 +1,550 @@
+{
+  "divisions": [
+    {
+      "name": "Bhopal Division",
+      "districts": [
+        {
+          "name": "Bhopal",
+          "tehsils": [
+            {
+              "name": "Huzur",
+              "cities": [ "Bhopal", "Misrod", "Kolar", "Bairagarh" ]
+            },
+            {
+              "name": "Berasia",
+              "cities": [ "Berasia", "Boong", "Gunga" ]
+            }
+          ]
+        },
+        {
+          "name": "Raisen",
+          "tehsils": [
+            {
+              "name": "Raisen",
+              "cities": [ "Raisen", "Silwani", "Gairatganj" ]
+            },
+            {
+              "name": "Begumganj",
+              "cities": [ "Begumganj" ]
+            }
+          ]
+        },
+        {
+          "name": "Rajgarh",
+          "tehsils": [
+            {
+              "name": "Rajgarh",
+              "cities": [ "Rajgarh", "Sarangpur" ]
+            },
+            {
+              "name": "Biaora",
+              "cities": [ "Biaora", "Khujner" ]
+            },
+            {
+              "name": "Khilchipur",
+              "cities": [ "Khilchipur" ]
+            }
+          ]
+        },
+        {
+          "name": "Sehore",
+          "tehsils": [
+            {
+              "name": "Sehore",
+              "cities": [ "Sehore", "Ashta", "Bharra" ]
+            },
+            {
+              "name": "Ichhawar",
+              "cities": [ "Ichhawar" ]
+            }
+          ]
+        },
+        {
+          "name": "Vidisha",
+          "tehsils": [
+            {
+              "name": "Vidisha",
+              "cities": [ "Vidisha", "Basoda", "Kurwai" ]
+            }
+          ]
+        },
+        {
+          "name": "Ashoknagar",
+          "tehsils": [
+            {
+              "name": "Ashoknagar",
+              "cities": [ "Ashoknagar", "Chanderi", "Mungaoli" ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Indore Division",
+      "districts": [
+        {
+          "name": "Indore",
+          "tehsils": [
+            {
+              "name": "Indore",
+              "cities": [ "Indore", "Rau", "Sanwer", "Mhow" ]
+            },
+            {
+              "name": "Depalpur",
+              "cities": [ "Depalpur", "Hatod" ]
+            }
+          ]
+        },
+        {
+          "name": "Dewas",
+          "tehsils": [
+            {
+              "name": "Dewas",
+              "cities": [ "Dewas", "Bagli" ]
+            },
+            {
+              "name": "Sonkatch",
+              "cities": [ "Sonkatch" ]
+            }
+          ]
+        },
+        {
+          "name": "Dhar",
+          "tehsils": [
+            {
+              "name": "Dhar",
+              "cities": [ "Dhar", "Manawar", "Kund" ]
+            },
+            {
+              "name": "Dharampuri",
+              "cities": [ "Dharampuri" ]
+            }
+          ]
+        },
+        {
+          "name": "Jhabua",
+          "tehsils": [
+            {
+              "name": "Jhabua",
+              "cities": [ "Jhabua", "Thandla" ]
+            },
+            {
+              "name": "Petlawad",
+              "cities": [ "Petlawad" ]
+            }
+          ]
+        },
+        {
+          "name": "Alirajpur",
+          "tehsils": [
+            {
+              "name": "Alirajpur",
+              "cities": [ "Alirajpur", "Jobat" ]
+            }
+          ]
+        },
+        {
+          "name": "Agar Malwa",
+          "tehsils": [
+            {
+              "name": "Agar",
+              "cities": [ "Agar", "Badod" ]
+            }
+          ]
+        },
+        {
+          "name": "Ratlam",
+          "tehsils": [
+            {
+              "name": "Ratlam",
+              "cities": [ "Ratlam", "Jaora", "Banswara" ]
+            }
+          ]
+        },
+        {
+          "name": "Mandsaur",
+          "tehsils": [
+            {
+              "name": "Mandsaur",
+              "cities": [ "Mandsaur", "Garoth", "Malhargarh" ]
+            }
+          ]
+        },
+        {
+          "name": "Neemuch",
+          "tehsils": [
+            {
+              "name": "Neemuch",
+              "cities": [ "Neemuch", "Manasa" ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ujjain Division",
+      "districts": [
+        {
+          "name": "Ujjain",
+          "tehsils": [
+            {
+              "name": "Ujjain",
+              "cities": [ "Ujjain", "Nagda", "Barnagar" ]
+            },
+            {
+              "name": "Badnagar",
+              "cities": [ "Badnagar" ]
+            },
+            {
+              "name": "Khachrod",
+              "cities": [ "Khachrod" ]
+            }
+          ]
+        },
+        {
+          "name": "Shajapur",
+          "tehsils": [
+            {
+              "name": "Shajapur",
+              "cities": [ "Shajapur", "Gogapur" ]
+            },
+            {
+              "name": "Susner",
+              "cities": [ "Susner" ]
+            }
+          ]
+        },
+        {
+          "name": "Guna",
+          "tehsils": [
+            {
+              "name": "Guna",
+              "cities": [ "Guna", "Raghogarh" ]
+            },
+            {
+              "name": "Aron",
+              "cities": [ "Aron" ]
+            }
+          ]
+        },
+        {
+          "name": "Shivpuri",
+          "tehsils": [
+            {
+              "name": "Shivpuri",
+              "cities": [ "Shivpuri", "Karera" ]
+            },
+            {
+              "name": "Pichhore",
+              "cities": [ "Pichhore" ]
+            }
+          ]
+        },
+        {
+          "name": "Datia",
+          "tehsils": [
+            {
+              "name": "Datia",
+              "cities": [ "Datia", "Seondha" ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Jabalpur Division",
+      "districts": [
+        {
+          "name": "Jabalpur",
+          "tehsils": [
+            {
+              "name": "Jabalpur",
+              "cities": [ "Jabalpur", "Shahpura", "Majholi", "Sihora" ]
+            },
+            {
+              "name": "Panagar",
+              "cities": [ "Panagar" ]
+            },
+            {
+              "name": "Patan",
+              "cities": [ "Patan" ]
+            }
+          ]
+        },
+        {
+          "name": "Katni",
+          "tehsils": [
+            {
+              "name": "Katni",
+              "cities": [ "Katni", "Murwara" ]
+            },
+            {
+              "name": "Bahoriband",
+              "cities": [ "Bahoriband" ]
+            }
+          ]
+        },
+        {
+          "name": "Narsinghpur",
+          "tehsils": [
+            {
+              "name": "Narsinghpur",
+              "cities": [ "Narsinghpur", "Gadarwara" ]
+            }
+          ]
+        },
+        {
+          "name": "Mandla",
+          "tehsils": [
+            {
+              "name": "Mandla",
+              "cities": [ "Mandla", "Nainpur" ]
+            }
+          ]
+        },
+        {
+          "name": "Dindori",
+          "tehsils": [
+            {
+              "name": "Dindori",
+              "cities": [ "Dindori", "Goregaon" ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Gwalior Division",
+      "districts": [
+        {
+          "name": "Gwalior",
+          "tehsils": [
+            {
+              "name": "Gwalior",
+              "cities": [ "Gwalior", "Morar" ]
+            },
+            {
+              "name": "Dabra",
+              "cities": [ "Dabra" ]
+            },
+            {
+              "name": "Bhitarwar",
+              "cities": [ "Bhitarwar" ]
+            }
+          ]
+        },
+        {
+          "name": "Morena",
+          "tehsils": [
+            {
+              "name": "Morena",
+              "cities": [ "Morena", "Ambah" ]
+            },
+            {
+              "name": "Porsa",
+              "cities": [ "Porsa" ]
+            }
+          ]
+        },
+        {
+          "name": "Bhind",
+          "tehsils": [
+            {
+              "name": "Bhind",
+              "cities": [ "Bhind", "Gohad" ]
+            },
+            {
+              "name": "Lahar",
+              "cities": [ "Lahar" ]
+            }
+          ]
+        },
+        {
+          "name": "Sheopur",
+          "tehsils": [
+            {
+              "name": "Sheopur",
+              "cities": [ "Sheopur", "Vijaipur" ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Rewa Division",
+      "districts": [
+        {
+          "name": "Rewa",
+          "tehsils": [
+            {
+              "name": "Rewa",
+              "cities": [ "Rewa", "Mangawan" ]
+            }
+          ]
+        },
+        {
+          "name": "Satna",
+          "tehsils": [
+            {
+              "name": "Satna",
+              "cities": [ "Satna", "Maihar" ]
+            },
+            {
+              "name": "Amarpatan",
+              "cities": [ "Amarpatan" ]
+            }
+          ]
+        },
+        {
+          "name": "Sidhi",
+          "tehsils": [
+            {
+              "name": "Sidhi",
+              "cities": [ "Sidhi", "Majhauli", "Sihawal" ]
+            }
+          ]
+        },
+        {
+          "name": "Singrauli",
+          "tehsils": [
+            {
+              "name": "Singrauli",
+              "cities": [ "Singrauli", "Waidhan" ]
+            }
+          ]
+        },
+        {
+          "name": "Anuppur",
+          "tehsils": [
+            {
+              "name": "Anuppur",
+              "cities": [ "Anuppur", "Kotma" ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Sagar Division",
+      "districts": [
+        {
+          "name": "Sagar",
+          "tehsils": [
+            {
+              "name": "Sagar",
+              "cities": [ "Sagar", "Khurai", "Bina" ]
+            },
+            {
+              "name": "Tungawan",
+              "cities": [ "Tungawan" ]
+            }
+          ]
+        },
+        {
+          "name": "Damoh",
+          "tehsils": [
+            {
+              "name": "Damoh",
+              "cities": [ "Damoh", "Pathariya" ]
+            }
+          ]
+        },
+        {
+          "name": "Chhatarpur",
+          "tehsils": [
+            {
+              "name": "Chhatarpur",
+              "cities": [ "Chhatarpur", "Rajnagar" ]
+            },
+            {
+              "name": "Bijawar",
+              "cities": [ "Bijawar" ]
+            }
+          ]
+        },
+        {
+          "name": "Tikamgarh",
+          "tehsils": [
+            {
+              "name": "Tikamgarh",
+              "cities": [ "Tikamgarh", "Palera" ]
+            }
+          ]
+        },
+        {
+          "name": "Panna",
+          "tehsils": [
+            {
+              "name": "Panna",
+              "cities": [ "Panna", "Ajaygarh" ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Narmadapuram Division",
+      "districts": [
+        {
+          "name": "Narmadapuram",
+          "tehsils": [
+            {
+              "name": "Narmadapuram",
+              "cities": [ "Narmadapuram", "Bargi" ]
+            }
+          ]
+        },
+        {
+          "name": "Harda",
+          "tehsils": [
+            {
+              "name": "Harda",
+              "cities": [ "Harda", "Sirali" ]
+            }
+          ]
+        },
+        {
+          "name": "Betul",
+          "tehsils": [
+            {
+              "name": "Betul",
+              "cities": [ "Betul", "Athner" ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Shahdol Division",
+      "districts": [
+        {
+          "name": "Shahdol",
+          "tehsils": [
+            {
+              "name": "Shahdol",
+              "cities": [ "Shahdol", "Ganj" ]
+            }
+          ]
+        },
+        {
+          "name": "Umaria",
+          "tehsils": [
+            {
+              "name": "Umaria",
+              "cities": [ "Umaria", "Bandhavgarh" ]
+            }
+          ]
+        },
+        {
+          "name": "Anuppur",
+          "tehsils": [
+            {
+              "name": "Anuppur",
+              "cities": [ "Anuppur" ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

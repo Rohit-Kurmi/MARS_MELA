@@ -2,63 +2,118 @@
 @Html.AntiForgeryToken()
 
 @{
-    ViewData["Title"] = "SignUP";
+    ViewData["Title"] = "Sign Up";
 }
 
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-6 col-sm-10">
 
+            <div class="card border-0 rounded-4 shadow-lg signup-card">
 
+                <!-- Header -->
+                <div class="card-header text-white text-center rounded-top-4 signup-header">
+                    <h4 class="mb-0 fw-bold">
+                        <i class="bi bi-person-plus-fill me-1"></i> User Registration
+                    </h4>
+                    <small class="opacity-75">Create your account to continue</small>
+                </div>
 
-<form asp-action="SignUP" asp-controller="Account" method="post">
-    <div class="container">
-        @* <div class="row">
-            <div class="col-sm-4">
-                <input type="radio" value="Citizen" asp-for="CreatedBy" id="CreatedBy1" />
-                <label for="CreatedBy1">Citizen</label>
-                <input type="radio" value="Company" asp-for="CreatedBy" id="CreatedBy2" />
-                <label for="CreatedBy2">Company</label>
-                <br />
-                <span asp-validation-for="CreatedBy" class="text-danger"></span>
-            </div>
-        </div> *@
+                <div class="card-body p-4">
 
+                    <form asp-action="SignUP" asp-controller="Account" method="post" novalidate>
 
-        <br /><br />
-        <div class="row">
-            <div class="col-sm-4">
-                <input asp-for="FirstName" class="form-control" placeholder="First Name" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
+                        <!-- First Name -->
+                        <div class="form-floating mb-3 position-relative">
+                            <i class="bi bi-person-fill input-icon"></i>
+                            <input asp-for="FirstName" class="form-control ps-5" placeholder="First Name" />
+                            <label asp-for="FirstName" class="ps-5"></label>
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="form-floating mb-3 position-relative">
+                            <i class="bi bi-person-badge-fill input-icon"></i>
+                            <input asp-for="LastName" class="form-control ps-5" placeholder="Last Name" />
+                            <label asp-for="LastName" class="ps-5"></label>
+                            <span asp-validation-for="LastName" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Mobile -->
+                        <div class="form-floating mb-3 position-relative">
+                            <i class="bi bi-telephone-fill input-icon"></i>
+                            <input asp-for="MobileNo" class="form-control ps-5" placeholder="Mobile Number" />
+                            <label asp-for="MobileNo" class="ps-5"></label>
+                            <small class="text-muted ms-1">We’ll never share your number</small>
+                            <span asp-validation-for="MobileNo" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-floating mb-4 position-relative">
+                            <i class="bi bi-envelope-fill input-icon"></i>
+                            <input asp-for="EmailID" class="form-control ps-5" placeholder="Email ID" />
+                            <label asp-for="EmailID" class="ps-5"></label>
+                            <small class="text-muted ms-1">Used for account communication</small>
+                            <span asp-validation-for="EmailID" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg fw-semibold signup-btn">
+                                <i class="bi bi-check-circle-fill me-1"></i> Create Account
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
             </div>
         </div>
-
-        <br /><br />
-        <div class="row">
-            <div class="col-sm-4">
-                <input asp-for="LastName" class="form-control " placeholder="Last Name" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
-        </div>
-
-        <br /><br />
-        <div class="row">
-            <div class="col-sm-4">
-                <input asp-for="MobileNo" class="form-control" placeholder="Mobile No." />
-                <span asp-validation-for="MobileNo" class="text-danger"></span>
-            </div>
-        </div>
-        <br /><br />
-        <div class="row">
-            <div class="col-sm-4">
-                <input asp-for="EmailID" class="form-control" placeholder="Email ID" />
-                <span asp-validation-for="EmailID" class="text-danger"></span>
-            </div>
-        </div>
-        <br />
-
-        <div class="row">
-            <div class="col-sm-4">
-                <input type="submit" class="btn btn-outline-primary  w-100" value="SignUp" />
-            </div>
-        </div>
-
     </div>
-</form>
+</div>
+
+<!-- Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+    /* Card hover */
+    .signup-card {
+        transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+        .signup-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,.15);
+        }
+
+    /* Header */
+    .signup-header {
+        background: linear-gradient(90deg,#0d6efd,#0b5ed7);
+    }
+
+    /* Input icon */
+    .input-icon {
+        position: absolute;
+        top: 50%;
+        left: 15px;
+        transform: translateY(-50%);
+        color: #6c757d;
+        font-size: 1.1rem;
+        pointer-events: none;
+    }
+
+    /* Input focus */
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 .15rem rgba(13,110,253,.25);
+    }
+
+    /* Button */
+    .signup-btn {
+        border-radius: 12px;
+    }
+
+        .signup-btn:hover {
+            background-color: #0b5ed7;
+        }
+</style>

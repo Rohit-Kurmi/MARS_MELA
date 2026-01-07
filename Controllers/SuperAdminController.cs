@@ -1,13 +1,16 @@
 ﻿using MARS_MELA_PROJECT.Models;
 using MARS_MELA_PROJECT.Repository_Implementation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
+using NuGet.Protocol.Core.Types;
 
 
 namespace MARS_MELA_PROJECT.Controllers
 {
     public class SuperAdminController : Controller
     {
+        private readonly IConfiguration _config;
 
 
         private readonly SuperAdmin _supad;
@@ -72,39 +75,104 @@ namespace MARS_MELA_PROJECT.Controllers
             return RedirectToAction("SuperAdminDashboard","SuperAdmin");
         }
 
-
-
-
-        public IActionResult MelaAdmin()
+        public IActionResult UpdateTradeFair()
         {
-            UserViewModel vm = new UserViewModel();
-            vm.Rolesdropdowns = _supad.GetRoles(); // repository call
-            vm.MelaAdmin = new MelaAdmin();
+            return View();
+        }
 
+        // ================= GetTradeFair (AJAX) =================
+        [HttpGet]
+        public IActionResult GetTradeFair(int? id, string? email)
+        {
+            if (id == null && string.IsNullOrEmpty(email))
+            {
+                return Json(new { success = false, message = "Please provide Fair ID or Email" });
+            }
 
-            return View(vm);
+            try
+            {
+                var fair = _supad.GetTradeFair(id, email);
+
+                if (fair == null)
+                {
+                    return Json(new { success = false, message = "Trade Fair not found" });
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        fairId = fair.FairId,
+                        fairName = fair.FairName,
+                        division = fair.Division,
+                        district = fair.District,
+                        tehsil = fair.Tehsil,
+                        city = fair.City,
+                        contactEmail = fair.ContactEmail,
+                        contactMobile1 = fair.ContactMobile1,
+                        contactMobile2 = fair.ContactMobile2,
+
+                        startDate = fair.StartDate?.ToString("yyyy-MM-dd"),
+                        endDate = fair.EndDate?.ToString("yyyy-MM-dd"),
+                        applyStartDate = fair.ApplyStartDate?.ToString("yyyy-MM-dd"),
+                        applyEndDate = fair.ApplyEndDate?.ToString("yyyy-MM-dd"),
+
+                        status = fair.Status,
+                        existingLogoPath = fair.ExistingLogoPath
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
         
+
+        // ================= UpdateTradeFair (POST) =================
+       [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateTradeFair(TradeFairUpdateVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                bool updated = _supad.UpdateTradeFair(model.Fair.FairId, model.Fair);
+
+                if (updated)
+                    TempData["Success"] = "Trade Fair updated successfully!";
+                else
+                    TempData["Error"] = "Trade Fair not found or not updated!";
+
+                return RedirectToAction("UpdateTradeFair");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction("UpdateTradeFair");
+            }
+        }
+
+
+    
         [HttpPost]
         public IActionResult MelaAdmin(UserViewModel model)
         {
-            // 🔴 IMPORTANT: dropdown data always reload
+            // 🔴 Dropdown hamesha reload
             model.Rolesdropdowns = _supad.GetRoles();
 
             if (!ModelState.IsValid)
             {
-                foreach (var state in ModelState)
-                {
-                    foreach (var error in state.Value.Errors)
-                    {
-                        Console.WriteLine($"KEY: {state.Key}, ERROR: {error.ErrorMessage}");
-                    }
-                }
-
+                return View(model); // 🔥 MOST IMPORTANT LINE
             }
 
-            // ✅ Safe assignment
+            // ✅ Ab safe hai
             model.MelaAdmin.RoleID = model.RoleID.Value;
 
             string session = HttpContext.Session.GetString("SuperAdminMobileNo");
@@ -120,9 +188,13 @@ namespace MARS_MELA_PROJECT.Controllers
                 return View(model);
             }
 
-            
-
             return RedirectToAction("SuperAdminDashboard", "SuperAdmin");
+        }
+
+
+        public IActionResult UpdateFairAdmin ()
+        {
+            return View();
         }
 
 

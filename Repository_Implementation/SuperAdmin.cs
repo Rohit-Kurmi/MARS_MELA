@@ -1,6 +1,7 @@
 ﻿using Humanizer;
 using MARS_MELA_PROJECT.Models;
 using MARS_MELA_PROJECT.Repository_Interface;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
@@ -121,6 +122,135 @@ namespace MARS_MELA_PROJECT.Repository_Implementation
                 }
             }
         }
+
+
+
+
+
+        // ================= Get Trade Fair By ID or Email =================
+        public UpdateTradeFairDTO? GetTradeFair(int? id, string? email)
+        {
+            using SqlConnection con = new SqlConnection(cs);
+            con.Open();
+
+            string q = @"
+        SELECT TOP 1 * FROM TradeFair
+        WHERE (@Id IS NULL OR FairID=@Id)
+        AND (@Email IS NULL OR ContactEmail=@Email)";
+
+            using SqlCommand cmd = new SqlCommand(q, con);
+            cmd.Parameters.AddWithValue("@Id", (object?)id ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Email", (object?)email ?? DBNull.Value);
+
+            using SqlDataReader r = cmd.ExecuteReader();
+            if (!r.Read()) return null;
+
+            return new UpdateTradeFairDTO
+            {
+                FairId = Convert.ToInt32(r["FairID"]),
+                FairName = r["FairName"].ToString(),
+                Division = r["Division"].ToString(),
+                District = r["District"].ToString(),
+                Tehsil = r["Tehsil"].ToString(),
+                City = r["City"].ToString(),
+                ContactEmail = r["ContactEmail"].ToString(),
+                ContactMobile1 = r["ContactMobile1"].ToString(),
+                ContactMobile2 = r["ContactMobile2"].ToString(),
+
+                StartDate = r["StartDate"] as DateTime?,
+                EndDate = r["EndDate"] as DateTime?,
+                ApplyStartDate = r["ApplyStartDate"] as DateTime?,
+                ApplyEndDate = r["ApplyEndDate"] as DateTime?,
+
+                Status = Convert.ToInt32(r["Status"]) == 1,
+                ExistingLogoPath = r["FairLogoPath"].ToString()
+            };
+        }
+
+
+
+        // ================= Update Trade Fair =================
+        public bool UpdateTradeFair(int fairId, UpdateTradeFairDTO fair)
+        {
+            using SqlConnection con = new SqlConnection(cs);
+            con.Open();
+
+            string? logoPath = fair.ExistingLogoPath;
+
+            // ✅ NEW LOGO UPLOADED
+            if (fair.NewLogo != null && fair.NewLogo.Length > 0)
+            {
+                string folderPath = Path.Combine(_env.WebRootPath, "uploads", "Fairlogos");
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+
+                string fileName = Guid.NewGuid() + Path.GetExtension(fair.NewLogo.FileName);
+                string fullPath = Path.Combine(folderPath, fileName);
+
+                using (FileStream fs = new FileStream(fullPath, FileMode.Create))
+                {
+                    fair.NewLogo.CopyTo(fs);
+                }
+
+                // ✅ delete old logo
+                if (!string.IsNullOrEmpty(fair.ExistingLogoPath))
+                {
+                    string oldPath = Path.Combine(_env.WebRootPath,
+                        fair.ExistingLogoPath.TrimStart('/'));
+
+                    if (File.Exists(oldPath))
+                        File.Delete(oldPath);
+                }
+
+                logoPath = "/uploads/Fairlogos/" + fileName;
+            }
+
+            string query = @"
+    UPDATE TradeFair SET
+        FairName=@FairName,
+        Division=@Division,
+        District=@District,
+        Tehsil=@Tehsil,
+        City=@City,
+        StartDate=@StartDate,
+        EndDate=@EndDate,
+        ApplyStartDate=@ApplyStartDate,
+        ApplyEndDate=@ApplyEndDate,
+        ContactEmail=@ContactEmail,
+        ContactMobile1=@ContactMobile1,
+        ContactMobile2=@ContactMobile2,
+        Status=@Status,
+        FairLogoPath=@FairLogoPath
+    WHERE FairID=@FairID";
+
+            using SqlCommand cmd = new SqlCommand(query, con);
+
+            cmd.Parameters.AddWithValue("@FairID", fairId);
+            cmd.Parameters.AddWithValue("@FairName", fair.FairName);
+            cmd.Parameters.AddWithValue("@Division", fair.Division);
+            cmd.Parameters.AddWithValue("@District", fair.District);
+            cmd.Parameters.AddWithValue("@Tehsil", fair.Tehsil);
+            cmd.Parameters.AddWithValue("@City", fair.City);
+
+            cmd.Parameters.AddWithValue("@StartDate", fair.StartDate);
+            cmd.Parameters.AddWithValue("@EndDate", fair.EndDate);
+            cmd.Parameters.AddWithValue("@ApplyStartDate", fair.ApplyStartDate);
+            cmd.Parameters.AddWithValue("@ApplyEndDate", fair.ApplyEndDate);
+
+            cmd.Parameters.AddWithValue("@ContactEmail", fair.ContactEmail);
+            cmd.Parameters.AddWithValue("@ContactMobile1",
+                (object?)fair.ContactMobile1 ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@ContactMobile2",
+                (object?)fair.ContactMobile2 ?? DBNull.Value);
+
+            cmd.Parameters.AddWithValue("@Status", fair.Status ? 1 : 0);
+            cmd.Parameters.AddWithValue("@FairLogoPath",
+                (object?)logoPath ?? DBNull.Value);
+
+            return cmd.ExecuteNonQuery() > 0;
+        }
+
+
 
 
 
